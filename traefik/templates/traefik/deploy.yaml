@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.PROJECT_NAME }}-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.PROJECT_NAME }}-pod
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.PROJECT_NAME }}-pod
+    spec:
+      serviceAccountName: traefik-ingress-controller
+      containers:
+# ========== IMAGE =============
+        - name: {{ .Values.IMAGE.NAME }}
+          image: {{ .Values.IMAGE.SOURCE }}:{{ .Values.IMAGE.VER }}
+# ========== POTS =============
+          {{- if .Values.PORTS }}
+          ports:
+            {{- range .Values.PORTS }}
+            - name: {{ .name }}
+              containerPort: {{ .port }}
+              protocol: {{ .protocol | upper }}
+            {{- end }}
+          {{- end }}
+# ====== VOLUME MOUNTS =======
+          {{- if .Values.VOLUME_MOUNTS }}
+          volumeMounts:
+            {{- range .Values.VOLUME_MOUNTS }}
+            {{- if .hostPath }}
+            - name: {{ .name }}-volume
+              mountPath: {{ .mountPath }}
+            {{- else if .secretName }}
+            - name: {{ .name }}-volume
+              mountPath: {{ .mountPath }}
+              subPath: {{ .subPath }}
+              readOnly: {{ .readOnly }}
+            {{- else if .aws_efs }}
+            - name: {{ .name }}-volume
+              mountPath: {{ .mountPath }}
+              readOnly: {{ .readOnly }}
+            {{- else if .configName }}
+            - name: {{ .name }}-volume
+              mountPath: {{ .mountPath }}
+              subPath: {{ .subPath }}
+              readOnly: {{ .readOnly }}
+            {{- end }}
+            {{- end }}
+          {{- end }}
+# ======== VOLUMES ==========    
+      {{- if .Values.VOLUME_MOUNTS }}
+      volumes:
+        {{- range .Values.VOLUME_MOUNTS }}
+        {{- if .hostPath }}
+        - name: {{ .name }}-volume
+          hostPath:
+            path: {{ .hostPath }}
+        {{- else if .secretName }}
+        - name: {{ .name }}-volume
+          secret:
+            secretName: {{ .secretName }}
+            items:
+            - key: {{ .key }}
+              path: {{ .subPath }}
+        {{- else if .aws_efs }}
+        - name: {{ .name }}-volume
+          persistentVolumeClaim:
+            claimName: {{ .name }}-pvc
+        {{- else if .configName }}
+        - name: {{ .name }}-volume
+          configMap:
+            name: {{ .configName }}
+            items:
+            - key: {{ .subPath }}
+              path: {{ .subPath }}
+        {{- end }}
+        {{- end }}
+      {{- end }}

@@ -1,0 +1,30 @@
+{{- if .Values.PORTS }}
+{{- range .Values.PORTS }}
+{{- if .ingress }}
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ $.Values.PROJECT_NAME }}-{{ .port }}-ingress
+  # annotations:
+  #   traefik.ingress.kubernetes.io/router.tls: "true"
+  #   traefik.ingress.kubernetes.io/router.middlewares: ds-ns-onlyoffice-headers@kubernetescrd
+spec:
+  entryPoints:
+    - {{ .entryPoint }}
+  routes:
+  - match: Host(`{{ .host }}`)
+    kind: Rule
+    services:
+    - name: {{ $.Values.PROJECT_NAME }}-svc
+      port: {{ .port }}
+    {{- if $.Values.MIDDLEWARES }}
+    middlewares:
+    {{- range $.Values.MIDDLEWARES }}
+    - name: {{ . }}
+    {{- end }}
+    {{- end }}
+  tls: {}
+---
+{{- end }}
+{{- end }}
+{{- end }}

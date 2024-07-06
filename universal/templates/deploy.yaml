@@ -1,0 +1,101 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.PROJECT_NAME }}
+  labels:
+    app: {{ .Values.PROJECT_NAME }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.PROJECT_NAME }}-pod
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.PROJECT_NAME }}-pod
+    spec:
+      {{- if $.Values.USER }}
+      securityContext:
+        runAsUser: {{ $.Values.USER }}
+      {{- end }}
+      containers:
+# ========== IMAGE =============
+      - name: {{ .Values.IMAGE.NAME }}
+        image: {{ .Values.IMAGE.SOURCE }}:{{ .Values.IMAGE.VER }}
+# ========== ENVS =============
+        {{- if .Values.ENVS }}
+        env:
+          {{- range .Values.ENVS }}
+          {{- if eq .type "text" }}
+          - name: {{ .name }}
+            value: "{{ toString .value }}"
+          {{- else if eq .type "secret" }}
+          - name: {{ .name }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ .name | toString | lower | replace "_" "-" }}-secret
+                key: {{ .key }}
+          {{- end }}
+          {{- end }}
+        {{- end }}
+# ========== LIMITS =============
+        {{- if .Values.LIMIT }}
+        resources:
+          limits:
+            {{- if .Values.LIMIT.CPU }}
+            cpu: "{{ .Values.LIMIT.CPU }}" 
+            {{- end }} 
+            {{- if .Values.LIMIT.MEMORY }}
+            memory: "{{ .Values.LIMIT.MEMORY }}" 
+            {{- end }}
+        {{- end }}
+# ========== POTS =============
+        {{- if .Values.PORTS }}
+        ports:
+          {{- range .Values.PORTS }}
+          - name: {{ .name }}
+            containerPort: {{ .port }}
+            protocol: {{ .protocol | upper }}
+          {{- end }}
+        {{- end }}
+# ====== VOLUME MOUNTS =======
+        {{- if .Values.VOLUME_MOUNTS }}
+        volumeMounts:
+          {{- range .Values.VOLUME_MOUNTS }}
+          {{- if .hostPath}}
+          - name: {{ .name }}-volume
+            mountPath: {{ .mountPath }}
+          {{- else if .secretName }}
+          - name: {{ .name }}-volume
+            mountPath: {{ .mountPath }}
+            subPath: {{ .subPath }}
+            readOnly: {{ .readOnly }}
+          {{- else if .aws_efs }}
+          - name: {{ .name }}-volume
+            mountPath: {{ .mountPath }}
+            readOnly: {{ .readOnly }}
+          {{- end }}
+          {{- end }}
+        {{- end }}
+# ======== VOLUMES ==========    
+      {{- if .Values.VOLUME_MOUNTS }}
+      volumes:
+        {{- range .Values.VOLUME_MOUNTS }}
+        {{- if .hostPath}}
+        - name: {{ .name }}-volume
+          hostPath:
+            path: {{ .hostPath }}
+        {{- else if .secretName }}
+        - name: {{ .name }}-volume
+          secret:
+            secretName: {{ .secretName }}
+            items:
+            - key: {{ .key }}
+              path: {{ .subPath }}
+        {{- else if .aws_efs }}
+        - name: {{ .name }}-volume
+          persistentVolumeClaim:
+            claimName: {{ .name }}-pvc
+        {{- end }}
+        {{- end }}
+      {{- end }}

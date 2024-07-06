@@ -1,0 +1,56 @@
+{{- range $.Values.VOLUME_MOUNTS }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: traefik.yml-cm
+data:
+  traefik.yml: |-
+    global:
+      checkNewVersion: false
+      sendAnonymousUsage: false
+
+    metrics:
+      prometheus:
+        addEntryPointsLabels: true
+        addServicesLabels: true
+        entryPoint: metrics
+
+    entrypoints:
+      metrics:
+        address: ":8082"
+      {{- range $.Values.PORTS }}
+      {{- if eq .name "traefik-exp" }}
+      # comment
+      {{- else if eq .name "dashboard" }}
+      # comment
+      {{- else }}
+      {{ .name }}:
+        address: ":{{ .port }}"
+        {{- if .proxyProtocol }}
+        proxyProtocol:
+          trustedIPs:
+            - "0.0.0.0/0"
+        forwardedHeaders:
+          trustedIPs:
+            - "0.0.0.0/0"
+        {{- end }}
+      {{- end }}
+      {{- end }}
+
+    providers:
+      kubernetesIngress: {}
+      kubernetesCRD: {}
+      file:
+        fileName: /etc/traefik/traefik.yml
+
+    api:
+      insecure: true
+      dashboard: true
+
+    tls:
+      certificates:
+        {{- range $.Values.SSL }}
+        - certFile: {{ .cert }}
+          keyFile: {{ .key }}
+        {{- end }}
+{{- end }}

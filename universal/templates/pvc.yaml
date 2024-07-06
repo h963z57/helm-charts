@@ -1,0 +1,36 @@
+{{- if .Values.VOLUME_MOUNTS }}
+{{- range .Values.VOLUME_MOUNTS }}
+{{- if .aws_efs_id }}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ $.Values.PROJECT_NAME }}-pv
+spec:
+  capacity:
+    storage: {{ .storage }}
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: {{ .name }}-sc
+  csi:
+    driver: efs.csi.aws.com
+    volumeHandle: {{ .aws_efs_id }}::{{ .aws_efs_ap }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .name }}-pvc
+spec:
+  storageClassName: {{ .name }}-sc
+  volumeName: {{ $.Values.PROJECT_NAME }}-pv
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .storage }}
+
+---
+{{- end }}
+{{- end }}
+{{- end }}

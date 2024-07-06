@@ -1,0 +1,41 @@
+EXTERNAL_IP:
+  - 10.13.10.102
+  - 2a05:d014:1a58:5700:a154:b918:47be:f43
+
+PROJECT_NAME: whoami
+
+IMAGE:
+  NAME: whoami
+  SOURCE: traefik/whoami
+  VER: "latest"
+
+# ENVS:
+#   - {name: TZ,                          type: text,   value: Europe/Moscow}
+#   - {name: EMAIL_DB_USER,               type: secret, key: prod}
+
+
+# DIRECT_CONNECTION: true
+PORTS:
+  # Create port entity in deploy/svc
+  # - {name: http, port: 80,  protocol: TCP}
+  # Create port entity in deploy/svc ingress
+  - {name: http, port: 80,  protocol: TCP, ingress: true, entryPoint: websecure, host: test.h963z57.com}
+
+VOLUME_MOUNTS:
+  # Secret
+  - {name: secret, mountPath: "/etc/traefik/traefik.yml", subPath: traefik.yml,   readOnly: true, secretName: traefik.yml-secret,   key: prod}
+  # PVC AWS_EFS
+  - {name: ui-db,  mountPath: "/etc/x-ui", readOnly: false, storage: 5Gi, aws_efs_id: fs-0d3d63ffca2e02aad, aws_efs_ap: fsap-064778ed194093333}
+  # LocalPath
+  - {name: ui-db,  mountPath: "/etc/x-ui", readOnly: false, hostPath: /mnt/test}
+# MIDDLEWARES:
+#   - nextcloud-redirectregex1
+#   - nextcloud-redirectregex1
+
+
+# LIMIT: 
+#   CPU: "1"
+#   MEMORY: "512Mi"
+
+# STORAGECLASSES:
+#   - {name: serviceName, aws_efs_id: fs-s7f8sf98s, state: present}

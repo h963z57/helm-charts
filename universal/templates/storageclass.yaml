@@ -1,0 +1,12 @@
+{{- if .Values.VOLUME_MOUNTS }}
+{{ range .Values.VOLUME_MOUNTS }}
+{{- if .aws_efs_id }}
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: {{ .name }}-sc
+provisioner: efs.csi.aws.com
+---
+{{ end }}
+{{ end }}
+{{ end }}

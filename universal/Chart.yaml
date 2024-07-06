@@ -1,0 +1,16 @@
+apiVersion : v2
+name       : Universal
+description: Universal for K3s
+type       : application
+version    : 0.0.0
+appVersion : "0.0.0"
+
+# keywords:
+#   - http
+#   - traefik
+#   - vnc
+
+maintainers:
+  - name : h963z57
+    email: all@h963z57.com
+    url  : h963z57.com
