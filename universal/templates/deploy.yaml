@@ -70,7 +70,7 @@ spec:
             mountPath: {{ .mountPath }}
             subPath: {{ .subPath }}
             readOnly: {{ .readOnly }}
-          {{- else if .aws_efs }}
+          {{- else if .aws_efs_id }}
           - name: {{ .name }}-volume
             mountPath: {{ .mountPath }}
             readOnly: {{ .readOnly }}
@@ -92,7 +92,7 @@ spec:
             items:
             - key: {{ .key }}
               path: {{ .subPath }}
-        {{- else if .aws_efs }}
+        {{- else if .aws_efs_id }}
         - name: {{ .name }}-volume
           persistentVolumeClaim:
             claimName: {{ .name }}-pvc
