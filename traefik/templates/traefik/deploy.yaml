@@ -44,7 +44,7 @@ spec:
               readOnly: {{ .readOnly }}
             {{- else if .configName }}
             - name: {{ .name }}-volume
-              mountPath: {{ .mountPath }}
+              mountPath: {{ .mountPath }}/{{ .subPath }}
               subPath: {{ .subPath }}
               readOnly: {{ .readOnly }}
             {{- end }}

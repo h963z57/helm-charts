@@ -12,7 +12,7 @@ PORTS:
   - {name: traefik-exp, port: 8082, protocol: TCP}
 
 VOLUME_MOUNTS:
-  - {name: traefik-config,   mountPath: "/etc/traefik/traefik.yml",     subPath: traefik.yml,   readOnly: true, configName: traefik.yml-cm}
+  - {name: traefik-config,   mountPath: "/etc/traefik",     subPath: traefik.yml,   readOnly: true, configName: traefik.yml-cm}
   
   - {name: fullchain-secret, mountPath: "/run/secrets/example.com.crt",   subPath: fullchain.pem, readOnly: true, secretName: fullchain.pem-secret, key: prod}
   - {name: privkey-secret,   mountPath: "/run/secrets/example.com.key",     subPath: privkey.pem,   readOnly: true, secretName: privkey.pem-secret,   key: prod}

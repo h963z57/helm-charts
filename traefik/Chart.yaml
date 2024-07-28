@@ -1,26 +1,11 @@
 apiVersion : v2
-name       : Common resources
-description: StorageClasses
+name       : Traefik
+description: Traefik
 type       : application
 version    : 0.0.0
 appVersion : "0.0.0"
-
-# keywords:
-#   - http
-#   - traefik
-#   - vnc
 
 maintainers:
   - name : h963z57
     email: all@h963z57.com
     url  : h963z57.com
-
-dependencies:
-  - name: aws-efs-csi-driver
-    repository: https://kubernetes-sigs.github.io/aws-efs-csi-driver/
-    version: 3.0.0
-    namespace: kube-system
-
-# helm repo add aws-efs-csi-driver https://kubernetes-sigs.github.io/aws-efs-csi-driver/
-# helm repo update
-# helm install efs-csi-controller aws-efs-csi-driver/aws-efs-csi-driver --version 3.0.0 --namespace kube-system

@@ -22,6 +22,13 @@ spec:
 # ========== IMAGE =============
       - name: {{ .Values.IMAGE.NAME }}
         image: {{ .Values.IMAGE.SOURCE }}:{{ .Values.IMAGE.VER }}
+        {{- if .Values.ARGS }}
+# ========== ENVS =============
+        args:
+        {{- range .Values.ARGS }}
+          - {{ . }}
+        {{- end }}
+        {{- end }}     
 # ========== ENVS =============
         {{- if .Values.ENVS }}
         env:
@@ -70,6 +77,11 @@ spec:
             mountPath: {{ .mountPath }}
             subPath: {{ .subPath }}
             readOnly: {{ .readOnly }}
+          {{- else if .configName }}
+          - name: {{ .name }}-volume
+            mountPath: {{ .mountPath }}/{{ .subPath }}
+            subPath: {{ .subPath }}
+            readOnly: {{ .readOnly }}
           {{- else if .aws_efs_id }}
           - name: {{ .name }}-volume
             mountPath: {{ .mountPath }}
@@ -91,6 +103,13 @@ spec:
             secretName: {{ .secretName }}
             items:
             - key: {{ .key }}
+              path: {{ .subPath }}
+        {{- else if .configName }}
+        - name: {{ .name }}-volume
+          configMap:
+            name: {{ .configName }}
+            items:
+            - key: {{ .subPath }}
               path: {{ .subPath }}
         {{- else if .aws_efs_id }}
         - name: {{ .name }}-volume

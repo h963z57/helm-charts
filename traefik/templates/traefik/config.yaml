@@ -44,7 +44,7 @@ data:
         fileName: /etc/traefik/traefik.yml
 
     api:
-      insecure: true
+      insecure: false
       dashboard: true
 
     tls:
