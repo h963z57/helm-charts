@@ -22,6 +22,9 @@ spec:
 # ========== IMAGE =============
       - name: {{ .Values.IMAGE.NAME }}
         image: {{ .Values.IMAGE.SOURCE }}:{{ .Values.IMAGE.VER }}
+        {{- if .Values.COMMAND }}
+        command: {{ .Values.COMMAND }}
+        {{- end }}
         {{- if .Values.ARGS }}
 # ========== ENVS =============
         args:
