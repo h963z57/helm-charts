@@ -9,6 +9,12 @@ IMAGE:
   SOURCE: traefik/whoami
   VER: "latest"
 
+# COMMAND: 
+#   - sh
+#   - -c
+#   - "apt-get update && apt-get install -y cron && echo '*/5 * * * * www-data /usr/local/bin/php -f /var/www/html/cron.php' > /etc/cron.d/nextcloud-cron &&  chmod 0644 /etc/cron.d/nextcloud-cron &&  crontab /etc/cron.d/nextcloud-cron && service cron start && exec /entrypoint.sh apache2-foreground"
+
+
 # ENVS:
 #   - {name: TZ,                          type: text,   value: Europe/Moscow}
 #   - {name: EMAIL_DB_USER,               type: secret, key: prod}
@@ -32,6 +38,21 @@ VOLUME_MOUNTS:
 #   - nextcloud-redirectregex1
 #   - nextcloud-redirectregex1
 
+# HEALTHCHECK:
+#   TYPE: tcp
+#   port: 6379
+#   initialDelaySeconds: 60
+#   periodSeconds: 30
+#   timeoutSeconds: 10
+#   failureThreshold: 3
+# == OR ==
+# HEALTHCHECK:
+#   TYPE: exec
+#   command: "curl -f http://localhost:80/ || exit 1"
+#   initialDelaySeconds: 60
+#   periodSeconds: 30
+#   timeoutSeconds: 10
+#   failureThreshold: 3
 
 # LIMIT: 
 #   CPU: "1"

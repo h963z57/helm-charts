@@ -23,6 +23,7 @@ spec:
       - name: {{ .Values.IMAGE.NAME }}
         image: {{ .Values.IMAGE.SOURCE }}:{{ .Values.IMAGE.VER }}
         {{- if .Values.COMMAND }}
+# ========= COMMAND ============
         command:
           {{- range .Values.COMMAND }}
           - {{ . }}
@@ -51,8 +52,8 @@ spec:
           {{- end }}
           {{- end }}
         {{- end }}
-# ========== LIMITS =============
         {{- if .Values.LIMIT }}
+# ========== LIMITS =============
         resources:
           limits:
             {{- if .Values.LIMIT.CPU }}
@@ -62,14 +63,48 @@ spec:
             memory: "{{ .Values.LIMIT.MEMORY }}" 
             {{- end }}
         {{- end }}
-# ========== POTS =============
         {{- if .Values.PORTS }}
+# ========== POTS =============
         ports:
           {{- range .Values.PORTS }}
           - name: {{ .name }}
             containerPort: {{ .port }}
             protocol: {{ .protocol | upper }}
           {{- end }}
+        {{- end }}
+        {{- if .Values.HEALTHCHECK }}
+# ======= HEALTHCHECK =========
+        livenessProbe:
+          {{- if eq .Values.HEALTHCHECK.TYPE "exec" }}
+          exec:
+            command:
+              - /bin/sh
+              - -c
+              - {{ .Values.HEALTHCHECK.command }}
+          {{- else if eq .Values.HEALTHCHECK.TYPE "tcp" }}
+          tcpSocket:
+            port: {{ .Values.HEALTHCHECK.port }}
+          {{- end }}
+          initialDelaySeconds: {{ .Values.HEALTHCHECK.initialDelaySeconds }}
+          periodSeconds: {{ .Values.HEALTHCHECK.periodSeconds }} 
+          timeoutSeconds: {{ .Values.HEALTHCHECK.timeoutSeconds }}
+          failureThreshold: {{ .Values.HEALTHCHECK.failureThreshold }}
+        
+        readinessProbe:
+          {{- if eq .Values.HEALTHCHECK.TYPE "exec" }}
+          exec:
+            command:
+              - /bin/sh
+              - -c
+              - {{ .Values.HEALTHCHECK.command }}
+          {{- else if eq .Values.HEALTHCHECK.TYPE "tcp" }}
+          tcpSocket:
+            port: {{ .Values.HEALTHCHECK.port }}
+          {{- end }}
+          initialDelaySeconds: {{ .Values.HEALTHCHECK.initialDelaySeconds }}
+          periodSeconds: {{ .Values.HEALTHCHECK.periodSeconds }}
+          timeoutSeconds: {{ .Values.HEALTHCHECK.timeoutSeconds }}
+          failureThreshold: {{ .Values.HEALTHCHECK.failureThreshold }}
         {{- end }}
 # ====== VOLUME MOUNTS =======
         {{- if .Values.VOLUME_MOUNTS }}
