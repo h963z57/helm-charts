@@ -18,6 +18,28 @@ spec:
       securityContext:
         runAsUser: {{ $.Values.USER }}
       {{- end }}
+      {{- if $.Values.PRIORITY }}
+# ========== PRIORITY ===========
+      priorityClassName: {{ $.Values.PROJECT_NAME }}-pc
+      affinity:
+        nodeAffinity:
+          {{- if  $.Values.PRIORITY.STRICT }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+          {{- else }}
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              preference:
+                matchExpressions:
+          {{- end }}
+                  - key: instance-type
+                    operator: In
+                    values:
+                      {{- range $.Values.PRIORITY.PREFER_INSTANCE }}
+                      - "{{ . }}"
+                      {{- end }}
+      {{- end }}
       containers:
 # ========== IMAGE =============
       - name: {{ .Values.IMAGE.NAME }}
@@ -106,8 +128,8 @@ spec:
           timeoutSeconds: {{ .Values.HEALTHCHECK.timeoutSeconds }}
           failureThreshold: {{ .Values.HEALTHCHECK.failureThreshold }}
         {{- end }}
-# ====== VOLUME MOUNTS =======
         {{- if .Values.VOLUME_MOUNTS }}
+# ====== VOLUME MOUNTS =======
         volumeMounts:
           {{- range .Values.VOLUME_MOUNTS }}
           {{- if .hostPath}}
