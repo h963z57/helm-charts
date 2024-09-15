@@ -61,8 +61,8 @@ VOLUME_MOUNTS:
 # STORAGECLASSES:
 #   - {name: serviceName, aws_efs_id: fs-s7f8sf98s, state: present}
 
-PRIORITY:
-  VALUE: 1000
-  PREFER_INSTANCE: 
-    - medium
-  STRICT: false
+# PRIORITY:
+#   VALUE: 1000
+#   PREFER_INSTANCE: 
+#     - medium
+#   STRICT: false
