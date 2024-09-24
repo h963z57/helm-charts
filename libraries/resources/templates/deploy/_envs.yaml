@@ -1,0 +1,18 @@
+{{- define "resources.envs" -}}
+# ========== ENVS =============
+{{- if .Values.ENVS }}
+env:
+  {{- range .Values.ENVS }}
+  {{- if eq .type "text" }}
+  - name: {{ .name }}
+    value: "{{ toString .value }}"
+  {{- else if eq .type "secret" }}
+  - name: {{ .name }}
+    valueFrom:
+      secretKeyRef:
+        name: {{ .name | toString | lower | replace "_" "-" }}-secret
+        key: {{ .key }}
+  {{- end }}
+  {{- end }}
+{{- end }}
+{{- end -}}

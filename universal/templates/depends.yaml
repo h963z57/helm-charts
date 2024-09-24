@@ -1,0 +1,5 @@
+{{- include "resources.ingress"       . | nindent 0 }}
+{{- include "resources.priorityClass" . | nindent 0 }}
+{{- include "resources.pvc"           . | nindent 0 }}
+{{- include "resources.storageClass"  . | nindent 0 }}
+{{- include "resources.svc"           . | nindent 0 }}

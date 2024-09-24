@@ -1,3 +1,4 @@
+{{- define "resources.svc" -}}
 {{- if .Values.PORTS }}
 apiVersion: v1
 kind: Service
@@ -25,3 +26,4 @@ spec:
       protocol: {{ .protocol }}
   {{- end }}
 {{- end }}
+{{- end -}}

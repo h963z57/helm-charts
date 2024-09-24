@@ -1,0 +1,24 @@
+{{- define "resources.priority" -}}
+{{- if $.Values.PRIORITY }}
+# ========== PRIORITY ===========
+priorityClassName: {{ $.Values.PROJECT_NAME }}-pc
+affinity:
+  nodeAffinity:
+    {{- if  $.Values.PRIORITY.STRICT }}
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+        - matchExpressions:
+    {{- else }}
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 1
+        preference:
+          matchExpressions:
+    {{- end }}
+            - key: instance-type
+              operator: In
+              values:
+                {{- range $.Values.PRIORITY.PREFER_INSTANCE }}
+                - "{{ . }}"
+                {{- end }}
+{{- end }}
+{{- end -}}

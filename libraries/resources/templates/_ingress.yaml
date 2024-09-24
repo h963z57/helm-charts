@@ -1,3 +1,4 @@
+{{- define "resources.ingress" -}}
 {{- if .Values.PORTS }}
 {{- range .Values.PORTS }}
 {{- if .ingress }}
@@ -5,9 +6,6 @@ apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: {{ $.Values.PROJECT_NAME }}-{{ .port }}-ingress
-  # annotations:
-  #   traefik.ingress.kubernetes.io/router.tls: "true"
-  #   traefik.ingress.kubernetes.io/router.middlewares: ds-ns-onlyoffice-headers@kubernetescrd
 spec:
   entryPoints:
     - {{ .entryPoint }}
@@ -28,3 +26,4 @@ spec:
 {{- end }}
 {{- end }}
 {{- end }}
+{{- end -}}

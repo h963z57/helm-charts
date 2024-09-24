@@ -1,0 +1,13 @@
+{{- define "resources.limits" -}}
+        {{- if .Values.LIMIT }}
+# ========== LIMITS =============
+resources:
+  limits:
+    {{- if .Values.LIMIT.CPU }}
+    cpu: "{{ .Values.LIMIT.CPU }}" 
+    {{- end }} 
+    {{- if .Values.LIMIT.MEMORY }}
+    memory: "{{ .Values.LIMIT.MEMORY }}" 
+    {{- end }}
+{{- end }}
+{{- end -}}

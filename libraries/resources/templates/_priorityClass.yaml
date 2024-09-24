@@ -1,3 +1,4 @@
+{{- define "resources.priorityClass" -}}
 {{- if $.Values.PRIORITY }}
 ---
 apiVersion: scheduling.k8s.io/v1
@@ -8,3 +9,4 @@ value: {{ $.Values.PRIORITY.VALUE }}
 globalDefault: false
 ---
 {{- end }}
+{{- end -}}

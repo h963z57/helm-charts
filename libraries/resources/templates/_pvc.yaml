@@ -1,3 +1,4 @@
+{{- define "resources.pvc" -}}
 {{- if .Values.VOLUME_MOUNTS }}
 {{- range .Values.VOLUME_MOUNTS }}
 {{- if .aws_efs_id }}
@@ -34,3 +35,4 @@ spec:
 {{- end }}
 {{- end }}
 {{- end }}
+{{- end -}}

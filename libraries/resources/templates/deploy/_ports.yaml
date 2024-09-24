@@ -1,0 +1,11 @@
+{{- define "resources.ports" -}}
+{{- if .Values.PORTS }}
+# ========== POTS =============
+ports:
+  {{- range .Values.PORTS }}
+  - name: {{ .name }}
+    containerPort: {{ .port }}
+    protocol: {{ .protocol | upper }}
+  {{- end }}
+{{- end }}
+{{- end -}}

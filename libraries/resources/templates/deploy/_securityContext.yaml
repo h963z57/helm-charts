@@ -1,0 +1,6 @@
+{{- define "resources.securityContext" -}}
+{{- if $.Values.USER }}
+securityContext:
+  runAsUser: {{ $.Values.USER }}
+{{- end }}
+{{- end -}}

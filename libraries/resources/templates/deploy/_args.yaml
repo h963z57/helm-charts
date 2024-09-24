@@ -1,0 +1,9 @@
+{{- define "resources.args" -}}
+{{- if .Values.ARGS }}
+# ========== ARGS =============
+args:
+{{- range .Values.ARGS }}
+  - {{ . }}
+{{- end }}
+{{- end }}     
+{{- end -}}

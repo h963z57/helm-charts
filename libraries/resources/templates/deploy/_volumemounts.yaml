@@ -1,0 +1,26 @@
+{{- define "resources.volumeMounts" -}}
+{{- if .Values.VOLUME_MOUNTS }}
+# ====== VOLUME MOUNTS =======
+volumeMounts:
+  {{- range .Values.VOLUME_MOUNTS }}
+  {{- if .hostPath}}
+  - name: {{ .name }}-volume
+    mountPath: {{ .mountPath }}
+  {{- else if .secretName }}
+  - name: {{ .name }}-volume
+    mountPath: {{ .mountPath }}
+    subPath: {{ .subPath }}
+    readOnly: {{ .readOnly }}
+  {{- else if .configName }}
+  - name: {{ .name }}-volume
+    mountPath: {{ .mountPath }}/{{ .subPath }}
+    subPath: {{ .subPath }}
+    readOnly: {{ .readOnly }}
+  {{- else if .aws_efs_id }}
+  - name: {{ .name }}-volume
+    mountPath: {{ .mountPath }}
+    readOnly: {{ .readOnly }}
+  {{- end }}
+  {{- end }}
+{{- end }}
+{{- end -}}

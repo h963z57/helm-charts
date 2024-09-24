@@ -1,0 +1,10 @@
+apiVersion : v2
+name       : Resources-config
+description: A library for resources
+type       : library
+version    : 0.0.0
+appVersion : "0.0.0"
+
+maintainers:
+  - name : "Roman Bykov"
+    email: all@h963z57.com

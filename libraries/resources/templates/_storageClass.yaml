@@ -1,3 +1,4 @@
+{{- define "resources.storageClass" -}}
 {{- if .Values.VOLUME_MOUNTS }}
 {{ range .Values.VOLUME_MOUNTS }}
 {{- if .aws_efs_id }}
@@ -10,3 +11,4 @@ provisioner: efs.csi.aws.com
 {{ end }}
 {{ end }}
 {{ end }}
+{{- end -}}

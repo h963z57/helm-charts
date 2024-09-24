@@ -9,3 +9,8 @@ maintainers:
   - name : h963z57
     email: all@h963z57.com
     url  : h963z57.com
+
+dependencies:
+  - name      : Resources-config
+    version   : 0.0.0
+    repository: "file://../libraries/resources"

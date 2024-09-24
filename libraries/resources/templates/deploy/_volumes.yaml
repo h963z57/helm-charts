@@ -1,0 +1,31 @@
+{{- define "resources.volumes" -}}
+# ======== VOLUMES ==========    
+{{- if .Values.VOLUME_MOUNTS }}
+volumes:
+  {{- range .Values.VOLUME_MOUNTS }}
+  {{- if .hostPath}}
+  - name: {{ .name }}-volume
+    hostPath:
+      path: {{ .hostPath }}
+  {{- else if .secretName }}
+  - name: {{ .name }}-volume
+    secret:
+      secretName: {{ .secretName }}
+      items:
+      - key: {{ .key }}
+        path: {{ .subPath }}
+  {{- else if .configName }}
+  - name: {{ .name }}-volume
+    configMap:
+      name: {{ .configName }}
+      items:
+      - key: {{ .subPath }}
+        path: {{ .subPath }}
+  {{- else if .aws_efs_id }}
+  - name: {{ .name }}-volume
+    persistentVolumeClaim:
+      claimName: {{ .name }}-pvc
+  {{- end }}
+  {{- end }}
+{{- end }}
+{{- end -}}

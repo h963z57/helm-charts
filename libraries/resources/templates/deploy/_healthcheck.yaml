@@ -1,0 +1,35 @@
+{{- define "resources.healthcheck" -}}
+{{- if .Values.HEALTHCHECK }}
+# ======= HEALTHCHECK =========
+livenessProbe:
+  {{- if eq .Values.HEALTHCHECK.TYPE "exec" }}
+  exec:
+    command:
+      - /bin/sh
+      - -c
+      - {{ .Values.HEALTHCHECK.command }}
+  {{- else if eq .Values.HEALTHCHECK.TYPE "tcp" }}
+  tcpSocket:
+    port: {{ .Values.HEALTHCHECK.port }}
+  {{- end }}
+  initialDelaySeconds: {{ .Values.HEALTHCHECK.initialDelaySeconds }}
+  periodSeconds: {{ .Values.HEALTHCHECK.periodSeconds }} 
+  timeoutSeconds: {{ .Values.HEALTHCHECK.timeoutSeconds }}
+  failureThreshold: {{ .Values.HEALTHCHECK.failureThreshold }}
+readinessProbe:
+  {{- if eq .Values.HEALTHCHECK.TYPE "exec" }}
+  exec:
+    command:
+      - /bin/sh
+      - -c
+      - {{ .Values.HEALTHCHECK.command }}
+  {{- else if eq .Values.HEALTHCHECK.TYPE "tcp" }}
+  tcpSocket:
+    port: {{ .Values.HEALTHCHECK.port }}
+  {{- end }}
+  initialDelaySeconds: {{ .Values.HEALTHCHECK.initialDelaySeconds }}
+  periodSeconds: {{ .Values.HEALTHCHECK.periodSeconds }}
+  timeoutSeconds: {{ .Values.HEALTHCHECK.timeoutSeconds }}
+  failureThreshold: {{ .Values.HEALTHCHECK.failureThreshold }}
+{{- end }}
+{{- end -}}
