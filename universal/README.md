@@ -1,7 +1,7 @@
-EXTERNAL_IP:
-  - 10.13.10.102
-  - 2a05:d014:1a58:5700:a154:b918:47be:f43
+# UNIVERSAL CHART
 
+## Example ```values.yaml```
+```yaml
 PROJECT_NAME: whoami
 
 IMAGE:
@@ -66,3 +66,4 @@ VOLUME_MOUNTS:
 #   PREFER_INSTANCE: 
 #     - medium
 #   STRICT: false
+```
