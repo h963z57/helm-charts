@@ -10,7 +10,11 @@ env:
   - name: {{ .name }}
     valueFrom:
       secretKeyRef:
+        {{- if .secretName }}
+        name: {{ .secretName | toString | lower | replace "_" "-" }}-secret
+        {{- else }}
         name: {{ .name | toString | lower | replace "_" "-" }}-secret
+        {{- end }}
         key: {{ .key }}
   {{- end }}
   {{- end }}

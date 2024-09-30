@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.2.0] - 30-Sep-2024
+### Added
+- ENV secret option (secretName)
+
 ## [1.1.0] - 25-Sep-2024
 ### Added
 - README.md
