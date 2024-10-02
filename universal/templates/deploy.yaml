@@ -1,9 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.PROJECT_NAME }}
-  labels:
-    app: {{ .Values.PROJECT_NAME }}
+  name: {{ .Values.PROJECT_NAME }}-deploy
 spec:
   replicas: 1
   selector:

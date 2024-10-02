@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.2.1] - 02-Oct-2024
+### Changed
+- Deployment name (add postfix)
+### Removed
+- Deployment labels
+
 ## [1.2.0] - 30-Sep-2024
 ### Added
 - ENV secret option (secretName)
