@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.3.0] - 07-Oct-2024
+### Added
+- HPA
+
 ## [1.2.1] - 02-Oct-2024
 ### Changed
 - Deployment name (add postfix)
