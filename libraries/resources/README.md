@@ -90,3 +90,13 @@ PRIORITY:
     - medium
   STRICT: false
 ```
+
+### PrioriHorizontal Pod Autoscaler
+```yaml
+HPA:
+  MINREPL: 2
+  MAXREPL: 5
+  TYPE:
+    CPU: 50 # Average optional
+    RAM: 50 # Average optional
+```
