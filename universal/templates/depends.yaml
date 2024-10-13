@@ -3,3 +3,4 @@
 {{- include "resources.pvc"           . | nindent 0 }}
 {{- include "resources.storageClass"  . | nindent 0 }}
 {{- include "resources.svc"           . | nindent 0 }}
+{{- include "resources.hpa"           . | nindent 0 }}

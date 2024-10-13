@@ -1,5 +1,6 @@
 {{- define "resources.hpa" -}}
 {{- if $.Values.HPA }}
+---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
@@ -29,4 +30,5 @@ spec:
         averageUtilization: {{ $.Values.HPA.TYPE.RAM }}
   {{- end }}
 {{- end }}
+---
 {{- end -}}

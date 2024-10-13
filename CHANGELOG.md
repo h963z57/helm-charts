@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.4.0] - 13-Oct-2024
+### Added
+- "---" in manifests 
+
 ## [1.3.0] - 07-Oct-2024
 ### Added
 - HPA
