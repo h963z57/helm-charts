@@ -2,6 +2,7 @@
 {{- if .Values.VOLUME_MOUNTS }}
 {{- range .Values.VOLUME_MOUNTS }}
 {{- if .aws_efs_id }}
+---
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -30,7 +31,6 @@ spec:
   resources:
     requests:
       storage: {{ .storage }}
-
 ---
 {{- end }}
 {{- end }}

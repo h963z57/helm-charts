@@ -2,6 +2,7 @@
 {{- if .Values.PORTS }}
 {{- range .Values.PORTS }}
 {{- if .ingress }}
+---
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
