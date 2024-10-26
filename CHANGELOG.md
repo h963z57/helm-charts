@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.5.0] - 26-Oct-2024
+### Added
+- IPv6 in proxyProtocol Traefik
+
 ## [1.4.0] - 13-Oct-2024
 ### Added
 - "---" in manifests 

@@ -30,9 +30,11 @@ data:
         proxyProtocol:
           trustedIPs:
             - "0.0.0.0/0"
+            - "::/0"
         forwardedHeaders:
           trustedIPs:
             - "0.0.0.0/0"
+            - "::/0"
         {{- end }}
       {{- end }}
       {{- end }}
