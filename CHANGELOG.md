@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.5.1] - 7-Dec-2024
+### Added
+- New ingress type
+
 ## [1.5.0] - 26-Oct-2024
 ### Added
 - IPv6 in proxyProtocol Traefik
