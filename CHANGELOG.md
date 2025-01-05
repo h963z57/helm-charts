@@ -1,6 +1,10 @@
 # Changelog
 
-## [1.5.1] - 7-Dec-2024
+## [1.5.2] - 05-Jan-2025
+### Added
+- Requests management
+
+## [1.5.1] - 07-Dec-2024
 ### Added
 - New ingress type
 
