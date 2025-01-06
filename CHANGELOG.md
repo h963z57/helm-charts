@@ -1,5 +1,10 @@
 # Changelog
 
+# [2.0.0] - 06-Jan-2025
+### Added
+- Traefik-network chart
+- "-" to rules 
+
 ## [1.5.2] - 05-Jan-2025
 ### Added
 - Requests management

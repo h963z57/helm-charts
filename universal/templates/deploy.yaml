@@ -12,8 +12,8 @@ spec:
       labels:
         app: {{ .Values.PROJECT_NAME }}-pod
     spec:
-      {{ include "resources.securityContext" . | nindent 6 }}
-      {{ include "resources.priority"        . | nindent 6 }}
+      {{- include "resources.securityContext" . | nindent 6 }}
+      {{- include "resources.priority"        . | nindent 6 }}
       containers:
 # ========== IMAGE =============
       - name: {{ .Values.IMAGE.NAME }}
