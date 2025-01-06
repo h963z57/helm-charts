@@ -4,6 +4,8 @@
 ### Added
 - Traefik-network chart
 - "-" to rules 
+### Removed
+- Network configuration in Universal
 
 ## [1.5.2] - 05-Jan-2025
 ### Added
