@@ -25,11 +25,7 @@ PORTS:
   # Create port entity in deploy/svc
   # - {name: http, port: 80,  protocol: TCP}
   # Create port entity in deploy/svc ingress
-  - {name: http, port: 80,  protocol: TCP, entryPoint: websecure, igwHttp: test.example.com}
-
-  - {name: smtps, port: 465, protocol: TCP, entryPoint: smtps, igwTCP: mail.h963z57.com, proxyProtocol: 2, tls: true}
-  #OR
-  - {name: smtps, port: 465, protocol: TCP, entryPoint: smtps, igwTCP: mail.h963z57.com}
+  - {name: http, port: 80,  protocol: TCP}
   
 VOLUME_MOUNTS:
   # Secret
