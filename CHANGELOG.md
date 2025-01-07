@@ -1,9 +1,10 @@
 # Changelog
 
-# [2.0.0] - 06-Jan-2025
+# [2.0.0] - 07-Jan-2025
 ### Added
 - Traefik-network chart
 - "-" to rules 
+- basic-auth middleware
 ### Removed
 - Network configuration in Universal
 

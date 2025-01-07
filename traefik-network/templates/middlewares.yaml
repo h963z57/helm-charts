@@ -35,6 +35,11 @@ spec:
     authResponseHeaders:
       - "Authorization"
       - "X-Forwarded-User"
+{{- else if eq $middleware.name "basic-auth"}}
+  name: {{ $value.name }}-basic-auth-mw
+spec:
+  basicAuth:
+    secret: {{ $middleware.secretName }}
 {{- end }}
 {{- end }}
 {{- end }}
