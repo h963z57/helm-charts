@@ -1,0 +1,45 @@
+{{- range $index, $value := $.Values.INBOUND_CONNECTION }}
+{{- $ruleNamespace := default (printf "%s-ns" $value.name) $value.namespace }}
+{{- range $indexMiddleware, $middleware :=  $value.middlewaresPresents }}
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  namespace: {{ $ruleNamespace }}
+{{- if eq $middleware.name "https-redirect"}}
+  name: {{ $value.name }}-https-redirect-mw
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+{{- else if eq $middleware.name "nextcloud-1"}}
+  name: {{ $value.name }}-nextcloud-1-mw
+spec:
+  replacePathRegex:
+    regex: "^/.well-known/ca(l|rd)dav"
+    replacement: "/remote.php/dav/"
+{{- else if eq $middleware.name "headers-cors-allow-all"}}
+  name: {{ $value.name }}-headers-cors-allow-all-mw
+spec:
+  headers:
+    customRequestHeaders:
+      X-Forwarded-Proto: https
+    accessControlAllowOriginList:
+      - "*"
+{{- else if eq $middleware.name "keycloak-auth"}}
+  name: {{ $value.name }}-keycloak-auth-mw
+spec:
+  forwardAuth:
+    address: "{{ $middleware.address }}"
+    trustForwardHeader: true
+    authResponseHeaders:
+      - "Authorization"
+      - "X-Forwarded-User"
+{{- else if eq $middleware.name "basic-auth"}}
+  name: {{ $value.name }}-basic-auth-mw
+spec:
+  basicAuth:
+    secret: {{ $middleware.secretName }}
+{{- end }}
+{{- end }}
+{{- end }}

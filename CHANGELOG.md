@@ -1,5 +1,25 @@
 # Changelog
 
+# [2.0.0] - 07-Jan-2025
+### Added
+- Traefik-network chart
+- "-" to rules 
+- basic-auth middleware
+### Removed
+- Network configuration in Universal
+
+## [1.5.2] - 05-Jan-2025
+### Added
+- Requests management
+
+## [1.5.1] - 07-Dec-2024
+### Added
+- New ingress type
+
+## [1.5.0] - 26-Oct-2024
+### Added
+- IPv6 in proxyProtocol Traefik
+
 ## [1.4.0] - 13-Oct-2024
 ### Added
 - "---" in manifests 

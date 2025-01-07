@@ -1,0 +1,55 @@
+{{- range $index, $value := $.Values.INBOUND_CONNECTION }}
+{{- $ruleNamespace := default (printf "%s-ns" $value.name) $value.namespace }}
+{{- $ruleOut       := default (printf "%s-svc" $value.name) $value.service }}
+---
+apiVersion: traefik.io/v1alpha1
+{{- if (or (eq $value.type "http") (eq $value.type "traefik"))}}
+kind: IngressRoute
+{{- else if eq $value.type "tcp" }}
+kind: IngressRouteTCP
+{{- end }}
+metadata:
+  name: {{ $value.name }}-{{ $value.port }}-ingress
+  namespace: {{ $ruleNamespace }}
+spec:
+  entryPoints:
+    {{- range $indexEntryPoint, $entryPoint := $value.entryPoints }}
+    - {{ $entryPoint }}
+    {{- end }}
+  routes:
+{{- if (or (eq $value.type "http") (eq $value.type "traefik")) }}
+  - match: Host(`{{ $value.domain }}`)
+    kind: Rule
+{{- else if eq $value.type "tcp" }}
+  {{- if eq $value.tls "passthrough" }}
+  - match: HostSNI(`{{ $value.domain }}`)
+  {{- else if or (eq $value.tls "notPresent") (not $value.tls) }}
+  - match: HostSNI(`*`)
+  {{- end }}
+{{- end }}
+    services:
+      - name: {{ $ruleOut }}
+{{- if eq $value.type "traefik" }}
+        kind: TraefikService
+{{- else }}
+        port: {{ $value.port }}
+        {{- if $value.proxyProtocol }}
+        proxyProtocol:
+          version: {{ $value.proxyProtocol }}
+        {{- end }}
+{{- end}}
+{{- if $value.middlewaresPresents }}
+    middlewares:
+  {{- range $indexMiddleware, $middleware :=  $value.middlewaresPresents }}
+    - name: {{ $value.name }}-{{ $middleware.name }}-mw
+  {{- end }}
+{{- end }}
+{{- if eq $value.tls "notPresent" }}
+  # noTLS
+{{- else if eq $value.tls "passthrough" }}
+  tls:
+    passthrough: true
+{{- else }}
+  tls: {}
+{{- end }}
+{{- end }}

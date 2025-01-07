@@ -1,13 +1,24 @@
 {{- define "resources.limits" -}}
-        {{- if .Values.LIMIT }}
+{{- if .Values.RESOURCES }}
 # ========== LIMITS =============
 resources:
+  {{- if .Values.RESOURCES.LIMIT }}
   limits:
-    {{- if .Values.LIMIT.CPU }}
-    cpu: "{{ .Values.LIMIT.CPU }}" 
+    {{- if .Values.RESOURCES.LIMIT.CPU }}
+    cpu: "{{ .Values.RESOURCES.LIMIT.CPU }}" 
     {{- end }} 
-    {{- if .Values.LIMIT.MEMORY }}
-    memory: "{{ .Values.LIMIT.MEMORY }}" 
+    {{- if .Values.RESOURCES.LIMIT.MEMORY }}
+    memory: "{{ .Values.RESOURCES.LIMIT.MEMORY }}" 
     {{- end }}
+  {{- end }}
+  {{- if .Values.RESOURCES.REQUESTS }}
+  requests:
+    {{- if .Values.RESOURCES.REQUESTS.CPU }}
+    cpu: "{{ .Values.RESOURCES.REQUESTS.CPU }}" 
+    {{- end }} 
+    {{- if .Values.RESOURCES.REQUESTS.MEMORY }}
+    memory: "{{ .Values.RESOURCES.REQUESTS.MEMORY }}" 
+    {{- end }}
+  {{- end }}
 {{- end }}
 {{- end -}}

@@ -25,8 +25,8 @@ PORTS:
   # Create port entity in deploy/svc
   # - {name: http, port: 80,  protocol: TCP}
   # Create port entity in deploy/svc ingress
-  - {name: http, port: 80,  protocol: TCP, ingress: true, entryPoint: websecure, host: test.example.com}
-
+  - {name: http, port: 80,  protocol: TCP}
+  
 VOLUME_MOUNTS:
   # Secret
   - {name: secret, mountPath: "/etc/traefik/traefik.yml", subPath: traefik.yml,   readOnly: true, secretName: traefik.yml-secret,   key: prod}
