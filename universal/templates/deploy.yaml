@@ -1,5 +1,6 @@
+{{- $kind := default "Deployment" $.Values.DAEMONSET }}
 apiVersion: apps/v1
-kind: Deployment
+kind: {{ $kind }}
 metadata:
   name: {{ .Values.PROJECT_NAME }}-deploy
 spec:

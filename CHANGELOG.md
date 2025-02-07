@@ -1,5 +1,9 @@
 # Changelog
 
+# [2.0.1] - 07-Feb-2025
+### Added
+- "kind" option
+
 # [2.0.0] - 07-Jan-2025
 ### Added
 - Traefik-network chart

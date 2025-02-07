@@ -2,6 +2,9 @@
 
 ## Example ```values.yaml```
 ```yaml
+
+DAEMONSET: false #may be "true"
+
 PROJECT_NAME: whoami
 
 IMAGE:
