@@ -1,6 +1,9 @@
-{{- $kind := default "Deployment" $.Values.DAEMONSET }}
 apiVersion: apps/v1
-kind: {{ $kind }}
+{{- if $.Values.DAEMONSET }}
+kind: DaemonSet
+{{- else }}
+kind: Deployment
+{{- end }}
 metadata:
   name: {{ .Values.PROJECT_NAME }}-deploy
 spec:

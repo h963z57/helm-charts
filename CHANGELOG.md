@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.1.0] - 09-Feb-2025
+### Added
+- hostPort option
+
 ## [2.0.1] - 07-Feb-2025
 ### Added
 - "kind" option
