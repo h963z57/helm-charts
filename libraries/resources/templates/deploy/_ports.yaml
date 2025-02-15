@@ -6,6 +6,9 @@ ports:
   - name: {{ .name }}
     containerPort: {{ .port }}
     protocol: {{ .protocol | upper }}
+    {{- if $.Values.HOSTPORT }}
+    hostPort: {{ .port }}
+    {{- end }}
   {{- end }}
 {{- end }}
 {{- end -}}

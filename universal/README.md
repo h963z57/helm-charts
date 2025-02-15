@@ -2,6 +2,9 @@
 
 ## Example ```values.yaml```
 ```yaml
+
+DAEMONSET: false #may be "true"
+
 PROJECT_NAME: whoami
 
 IMAGE:
@@ -19,8 +22,8 @@ IMAGE:
 #   - {name: TZ,                          type: text,   value: Europe/Moscow}
 #   - {name: EMAIL_DB_USER,               type: secret, key: prod}
 
-
-# DIRECT_CONNECTION: true
+# HOSTPORT: false
+# DIRECT_CONNECTION: false
 PORTS:
   # Create port entity in deploy/svc
   # - {name: http, port: 80,  protocol: TCP}

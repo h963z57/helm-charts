@@ -1,5 +1,5 @@
 {{- define "resources.svc" -}}
-{{- if .Values.PORTS }}
+{{- if and $.Values.PORTS (not $.Values.HOSTPORT )}}
 ---
 apiVersion: v1
 kind: Service
