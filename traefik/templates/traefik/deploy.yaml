@@ -12,6 +12,7 @@ spec:
       labels:
         app: {{ .Values.PROJECT_NAME }}-pod
     spec:
+      {{- include "resources.priority"        . | nindent 6 }}
       serviceAccountName: traefik-ingress-controller
       containers:
 # ========== IMAGE =============
