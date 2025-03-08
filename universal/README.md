@@ -66,7 +66,9 @@ VOLUME_MOUNTS:
 
 # PRIORITY:
 #   VALUE: 1000
-#   PREFER_INSTANCE: 
-#     - medium
+#   NODE_SELECTOR: [
+#     {label: cloud, value: aws  },
+#     {label: key,   value: value},
+#   ]
 #   STRICT: false
 ```

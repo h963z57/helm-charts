@@ -14,11 +14,11 @@ affinity:
         preference:
           matchExpressions:
     {{- end }}
-            - key: instance-type
+            {{- range $.Values.PRIORITY.NODE_SELECTOR }}
+            - key: {{ .label }}
               operator: In
               values:
-                {{- range $.Values.PRIORITY.PREFER_INSTANCE }}
-                - "{{ . }}"
-                {{- end }}
+                - "{{ .value }}"
+            {{- end }}
 {{- end }}
 {{- end -}}

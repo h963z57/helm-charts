@@ -1,1 +1,2 @@
-{{- include "resources.svc" . | nindent 0 }}
+{{- include "resources.priorityClass" . | nindent 0 }}
+{{- include "resources.svc"           . | nindent 0 }}

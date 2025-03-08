@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.2.0] - 08-Mar-2025
+### Changed
+- method node selector
+
 ## [2.1.0] - 09-Feb-2025
 ### Added
 - hostPort option
