@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.3.0] - 09-Mar-2025
+### Changed
+- pv create for aws-efs (fix dublicate)
+
 ## [2.2.0] - 08-Mar-2025
 ### Changed
 - method node selector
