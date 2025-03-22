@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.4.0] - 22-Mar-2025
+### Changed
+- AND or OR (priority)
+
 ## [2.3.0] - 09-Mar-2025
 ### Changed
 - pv create for aws-efs (fix dublicate)

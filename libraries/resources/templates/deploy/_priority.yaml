@@ -4,21 +4,28 @@
 priorityClassName: {{ $.Values.PROJECT_NAME }}-pc
 affinity:
   nodeAffinity:
-    {{- if  $.Values.PRIORITY.STRICT }}
     requiredDuringSchedulingIgnoredDuringExecution:
       nodeSelectorTerms:
+      {{- if  $.Values.PRIORITY.STRICT }}
         - matchExpressions:
-    {{- else }}
-    preferredDuringSchedulingIgnoredDuringExecution:
-      - weight: 1
-        preference:
-          matchExpressions:
-    {{- end }}
             {{- range $.Values.PRIORITY.NODE_SELECTOR }}
             - key: {{ .label }}
               operator: In
               values:
-                - "{{ .value }}"
+                {{- range .value }}
+                - "{{ . }}"
+                {{- end }}
             {{- end }}
+      {{- else }}
+            {{- range $.Values.PRIORITY.NODE_SELECTOR }}
+        - matchExpressions:
+            - key: {{ .label }}
+              operator: In
+              values:
+                {{- range .value }}
+                - "{{ . }}"
+                {{- end }}
+            {{- end }}
+      {{- end }}
 {{- end }}
 {{- end -}}
