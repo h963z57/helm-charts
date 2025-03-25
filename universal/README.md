@@ -57,6 +57,28 @@ VOLUME_MOUNTS:
 #   timeoutSeconds: 10
 #   failureThreshold: 3
 
+# CONFIGMAPS:
+#   TRAEFIK:
+#     SSL:
+#       - {cert: "/run/secrets/example.com.crt", key: "/run/secrets/example.com.key"}
+
+# CONFIGMAPS:
+#   PROMETHEUS:
+#     HOSTS:
+#       - {jobName: prometheus, targets: [{url: localhost:9090,   labels: prometheus}]}
+#       - {jobName: traefik,    targets: [{url: traefik-svc:8082, labels: traefik   }]}
+
+#       - {jobName: masters, targets: [
+#           {url: "[2a05<...>1bb2]:9100", labels: master-0},
+#           {url: "[2a05:<...>468]:9100", labels: master-1},
+#         ]}
+#       - {jobName: workers, targets: [
+#           {url: "[2a05:d0<...>:5a9f]:9100",   labels: worker-0},
+#           {url: "[2a05:d<...>1:f3ca]:9100",   labels: worker-1},
+#           {url: "[2a03:b0<...>87d:e000]:9100",labels: worker-2},
+#           {url: "[2a00:<...>005:1::350]:9100",labels: worker-3},
+#         ]}
+
 # LIMIT: 
 #   CPU: "1"
 #   MEMORY: "512Mi"

@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.0.0] - 25-Mar-2025
+### Added
+- prometheus config map
+### Changed
+- unification traefik & universal
+### Removed
+- Traefik chart
+
 ## [2.4.0] - 22-Mar-2025
 ### Changed
 - AND or OR (priority)
