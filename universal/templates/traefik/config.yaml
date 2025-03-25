@@ -1,3 +1,4 @@
+{{- if (and $.Values.CONFIGMAPS.TRAEFIK) }}
 {{- range $.Values.VOLUME_MOUNTS }}
 apiVersion: v1
 kind: ConfigMap
@@ -41,8 +42,9 @@ data:
 
     tls:
       certificates:
-        {{- range $.Values.SSL }}
+        {{- range $.Values.CONFIGMAPS.TRAEFIK.SSL }}
         - certFile: {{ .cert }}
           keyFile: {{ .key }}
         {{- end }}
+{{- end }}
 {{- end }}

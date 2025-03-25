@@ -1,5 +1,25 @@
 # Changelog
 
+## [3.0.0] - 25-Mar-2025
+### Added
+- prometheus config map
+### Changed
+- unification traefik & universal
+### Removed
+- Traefik chart
+
+## [2.4.0] - 22-Mar-2025
+### Changed
+- AND or OR (priority)
+
+## [2.3.0] - 09-Mar-2025
+### Changed
+- pv create for aws-efs (fix dublicate)
+
+## [2.2.0] - 08-Mar-2025
+### Changed
+- method node selector
+
 ## [2.1.0] - 09-Feb-2025
 ### Added
 - hostPort option

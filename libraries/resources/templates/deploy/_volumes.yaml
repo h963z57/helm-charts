@@ -24,7 +24,7 @@ volumes:
   {{- else if .aws_efs_id }}
   - name: {{ .name }}-volume
     persistentVolumeClaim:
-      claimName: {{ .name }}-pvc
+      claimName: {{ $.Values.PROJECT_NAME }}-{{ .name }}-pvc
   {{- end }}
   {{- end }}
 {{- end }}
