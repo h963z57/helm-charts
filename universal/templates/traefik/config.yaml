@@ -1,4 +1,4 @@
-{{- if (and $.Values.CONFIGMAPS.TRAEFIK) }}
+{{- if and $.Values.CONFIGMAPS $.Values.CONFIGMAPS.TRAEFIK }}
 {{- range $.Values.VOLUME_MOUNTS }}
 apiVersion: v1
 kind: ConfigMap
