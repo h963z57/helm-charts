@@ -1,4 +1,4 @@
-{{- if (and $.Values.CONFIGMAPS.TRAEFIK) }}
+{{- if and $.Values.CONFIGMAPS $.Values.CONFIGMAPS.TRAEFIK }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:

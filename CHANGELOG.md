@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.0.1] - 29-Apr-2025
+### Changed
+- bugfix
+
 ## [3.0.0] - 25-Mar-2025
 ### Added
 - prometheus config map

@@ -1,4 +1,4 @@
-{{- if (and $.Values.CONFIGMAPS.TRAEFIK) }}
+{{- if and $.Values.CONFIGMAPS $.Values.CONFIGMAPS.TRAEFIK }}
 # All resources definition must be declared
 ---
 apiVersion: apiextensions.k8s.io/v1

@@ -16,7 +16,7 @@ spec:
       labels:
         app: {{ .Values.PROJECT_NAME }}-pod
     spec:
-      {{- if (and $.Values.CONFIGMAPS.TRAEFIK) }}
+      {{- if and $.Values.CONFIGMAPS $.Values.CONFIGMAPS.TRAEFIK }}
       serviceAccountName: traefik-ingress-controller
       {{- end }}
       {{- include "resources.securityContext" . | nindent 6 }}

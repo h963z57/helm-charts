@@ -4,6 +4,6 @@
 {{- include "resources.svc"                . | nindent 0 }}
 {{- include "resources.hpa"                . | nindent 0 }}
 
-{{- if $.Values.CONFIGMAPS.PROMETHEUS }}
+{{- if and $.Values.CONFIGMAPS $.Values.CONFIGMAPS.PROMETHEUS }}
 {{- include "configmaps.prometheus.config" . | nindent 0 }}
 {{- end }}
