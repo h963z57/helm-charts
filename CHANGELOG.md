@@ -1,5 +1,9 @@
 # Changelog
 
+## [4.0.0] - 04-Jun-2025
+### Added
+- depends
+
 ## [3.0.1] - 29-Apr-2025
 ### Changed
 - bugfix
