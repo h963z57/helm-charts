@@ -5,6 +5,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ $.Values.PROJECT_NAME }}-svc
+  namespace: {{ .Release.Namespace }}
 spec:
   ipFamilyPolicy: PreferDualStack
   ipFamilies:
