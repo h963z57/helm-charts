@@ -12,16 +12,16 @@ IMAGES:
 
 COMMANDS:
   default_EXAMPLE:
-    - "/bin/sh"
-    - "..."
+  #   - "/bin/sh"
+  #   - "..."
 
 ARGS:
   default_EXAMPLE:
-    - "-c"
-    - "-b"
+  #   - "-c"
+  #   - "-b"
     
 ENVIRONMENTS:
-  # default_EXAMPLE:
+  default_EXAMPLE:
   #   - {name: EXAMPLE, type: fieldRef, value: val  }
   #   - {name: EXAMPLE, type: text,     value: val  }
   #   - {name: EXAMPLE, type: fieldRef, value: val  }
@@ -29,26 +29,21 @@ ENVIRONMENTS:
 
 VOLUME_MOUNTS:
   default_EXAMPLE:
-    - {name: example, mountPath: /destination/path, fieldRef: ["metadata.labels", "metadata.annotations"]                    }
-    - {name: example, mountPath: /destination/path, serviceAccountToken: '{<body>}'                                          }
-    - {name: example, mountPath: /destination/path, subPath: root-cert.pem, configMapName: existConfigMapName, noPrefix: true}
-    - {name: example, mountPath: /destination/path, emptyDir: regular                                                        }
-    - {name: example, mountPath: /destination/path, emptyDir: memory                                                         }
+  #   - {name: example, mountPath: /destination/path, fieldRef: ["metadata.labels", "metadata.annotations"]                    }
+  #   - {name: example, mountPath: /destination/path, serviceAccountToken: '{<body>}'                                          }
+  #   - {name: example, mountPath: /destination/path, subPath: root-cert.pem, configMapName: existConfigMapName, noPrefix: true}
+  #   - {name: example, mountPath: /destination/path, emptyDir: regular                                                        }
+  #   - {name: example, mountPath: /destination/path, emptyDir: memory                                                         }
 
 
 
 PROBES:
-  default_EXAMPLE:
-    livenessProbe:  '{failureThreshold: 3,   httpGet: {path: /actuator/health, port: 9080,  scheme: HTTP}, initialDelaySeconds: 90, periodSeconds: 30, successThreshold: 1, timeoutSeconds: 10 }'
-    readinessProbe: '{failureThreshold: 3,   httpGet: {path: /actuator/health, port: 9080,  scheme: HTTP}, initialDelaySeconds: 90, periodSeconds: 30, successThreshold: 1, timeoutSeconds: 1  }'
-    startupProbe:   '{failureThreshold: 300, httpGet: {path: /actuator/health, port: 9080,  scheme: HTTP}, initialDelaySeconds: 30, periodSeconds: 30, successThreshold: 1, timeoutSeconds: 1  }'
+  default_DJANGO: 
+    readinessProbe: '{failureThreshold: 3, initialDelaySeconds: 60, periodSeconds: 30, successThreshold: 1, tcpSocket: {port: 8000}, timeoutSeconds: 10}'
 
 PORTS:
-  default_EXAMPLE:
-    - 1
-    - 2
-    - 3
-    - 4
+  default_DJANGO:
+    - {name: http, port: 8000,  protocol: TCP}
 
 
 RESOURCES:
@@ -56,13 +51,13 @@ RESOURCES:
 
 DCM:
   default_ASBS:
-    - name: config-file
-      mountPath: /app/il/tmp/conf
-      configMapName: tomcat-cm
-      subPath: web.xml
-      content:
-      - data: |-
-          <body>
+  #   - name: config-file
+  #     mountPath: /app/il/tmp/conf
+  #     configMapName: tomcat-cm
+  #     subPath: web.xml
+  #     content:
+  #     - data: |-
+  #         <body>
 
 # GRACEFULL_SHUTDOWN:
 #   ASBS:

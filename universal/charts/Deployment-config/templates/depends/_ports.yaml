@@ -10,9 +10,12 @@ ports:
   (default (list) (index $Global.Values.PORTS (printf "default_%s" (upper .presetLabel)))) 
   (default (list) (index $Global.Values.PORTS (upper .presetLabel)))
 )}}
-  - name: tcp-{{ $value }}
-    containerPort: {{ $value }}
-    protocol: TCP
+  - name: {{ $value.name }}
+    containerPort: {{ $value.port }}
+    protocol: {{ $value.protocol | upper }}
+    {{- if $value.hostport }}
+    hostPort: {{ $value.port }}
+    {{- end }}
 {{- end }}
 {{- end }}
 {{- end -}}
