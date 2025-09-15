@@ -1,0 +1,12 @@
+{{- define "deployment.securityContext" -}}
+{{- $Global := .Global }}
+# --== Lib deploy securityContext ==--
+securityContext:
+  {{ (index $Global.Values.SECURITYCONTEXT "default") | nindent 2 }}
+  {{- if eq $Global.Values.CLUSTER_TYPE "dropapp" }}
+  seccompProfile: 
+    type: RuntimeDefault
+  runAsUser: 100150574
+  runAsGroup: 100150574
+  {{- end }}
+{{- end -}}

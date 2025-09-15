@@ -1,0 +1,104 @@
+
+# ==================================================================================================================================================
+# {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{ >EDIT PARAMETERS< }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+# ==================================================================================================================================================
+
+IMAGES:
+
+  
+# ==================================================================================================================================================
+# {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{[[{ >DEFAULT PARAMETERS< }]]}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+# ==================================================================================================================================================
+
+COMMANDS:
+  default_EXAMPLE:
+    - "/bin/sh"
+    - "..."
+
+ARGS:
+  default_EXAMPLE:
+    - "-c"
+    - "-b"
+    
+ENVIRONMENTS:
+  default_EXAMPLE:
+    - {name: EXAMPLE, type: fieldRef, value: val  }
+    - {name: EXAMPLE, type: text,     value: val  }
+    - {name: EXAMPLE, type: fieldRef, value: val  }
+    - {name: EXAMPLE, type: text,     value: "val"}
+
+# DISABLED
+# SECMAN_SECRETS:
+#   default_EXAMPLE:
+#     - {mountName: example.tet, mountPath: /path/to/, secrets: [{key: key, name: name}]} 
+
+
+VOLUME_MOUNTS:
+  default_EXAMPLE:
+    - {name: example, mountPath: /destination/path, fieldRef: ["metadata.labels", "metadata.annotations"]                    }
+    - {name: example, mountPath: /destination/path, serviceAccountToken: '{<body>}'                                          }
+    - {name: example, mountPath: /destination/path, subPath: root-cert.pem, configMapName: existConfigMapName, noPrefix: true}
+    - {name: example, mountPath: /destination/path, emptyDir: regular                                                        }
+    - {name: example, mountPath: /destination/path, emptyDir: memory                                                         }
+
+
+
+PROBES:
+  default_EXAMPLE:
+    livenessProbe:  '{failureThreshold: 3,   httpGet: {path: /actuator/health, port: 9080,  scheme: HTTP}, initialDelaySeconds: 90, periodSeconds: 30, successThreshold: 1, timeoutSeconds: 10 }'
+    readinessProbe: '{failureThreshold: 3,   httpGet: {path: /actuator/health, port: 9080,  scheme: HTTP}, initialDelaySeconds: 90, periodSeconds: 30, successThreshold: 1, timeoutSeconds: 1  }'
+    startupProbe:   '{failureThreshold: 300, httpGet: {path: /actuator/health, port: 9080,  scheme: HTTP}, initialDelaySeconds: 30, periodSeconds: 30, successThreshold: 1, timeoutSeconds: 1  }'
+
+PORTS:
+  default_EXAMPLE:
+    - 1
+    - 2
+    - 3
+    - 4
+
+
+RESOURCES:
+  default_EXAMPLE: { CPU_LIMIT: "", RAM_LIMIT: "", CPU_REQUESTS: "", RAM_REQUESTS: "" }
+
+DCM:
+  default_ASBS:
+    - name: config-file
+      mountPath: /app/il/tmp/conf
+      configMapName: tomcat-cm
+      subPath: web.xml
+      content:
+      - data: |-
+          <body>
+
+# GRACEFULL_SHUTDOWN:
+#   ASBS:
+#     - {name: lifecycle,  httpGet: {path: /il/sys/shutdown.jsps, port: 9080, scheme: HTTP}}
+
+# ==================================================================================================================================================
+# {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{[{ >STATIC PARAMETERS< }}]}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+# ==================================================================================================================================================
+
+IMAGE_PATHS:
+  stand: <URL_REGISTRY>
+
+SECMAN_NAMESPACE:
+  stand: <namespace>
+
+SECMAN_PATH:
+  stand: PATH/TO
+
+SECMAN_CONFIG:
+  stand:
+    noclueter:
+      PATH: PATH/TO
+      ROLE: norole
+
+SECURITYCONTEXT:
+  default: |-
+    capabilities: 
+      drop:
+        - ALL
+    privileged: false
+    runAsNonRoot: true
+    readOnlyRootFilesystem: true
+    allowPrivilegeEscalation: false

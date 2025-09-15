@@ -1,0 +1,19 @@
+{{- define "deployment.resources" -}}
+{{- $Global := .Global }}
+# --== Lib deploy resources ==--
+resources:
+  {{- if (index $Global.Values.RESOURCES (upper .presetLabel)).CPU_LIMIT  }}
+  {{- if (index $Global.Values.RESOURCES (upper .presetLabel)).RAM_LIMIT  }}
+  limits:
+    cpu: {{ tpl (index (index $Global.Values.RESOURCES (upper .presetLabel)) "CPU_LIMIT") $Global | quote }}
+    memory: {{ tpl (index (index $Global.Values.RESOURCES (upper .presetLabel)) "RAM_LIMIT") $Global | quote }}
+  {{- end }}
+  {{- end }}
+  {{- if (index $Global.Values.RESOURCES (upper .presetLabel)).CPU_REQUESTS }}
+  {{- if (index $Global.Values.RESOURCES (upper .presetLabel)).RAM_REQUESTS }}
+  requests:
+    cpu: {{ tpl (index (index $Global.Values.RESOURCES (upper .presetLabel)) "CPU_REQUESTS") $Global | quote }}
+    memory: {{ tpl (index (index $Global.Values.RESOURCES (upper .presetLabel)) "RAM_REQUESTS") $Global | quote }}
+  {{- end }}
+  {{- end }}
+{{- end -}}

@@ -1,0 +1,83 @@
+{{- $jiraTeam := regexFind "[a-zA-Z]+" $.Values.JIRA_ID | lower }}
+{{- $splitNamespace := splitList "-" $.Release.Namespace | rest  }} 
+{{- $filteredNamespace :=  without $splitNamespace "prod" "regress" "ift" "ift1" "ift2" "dev" "lt" "lt1" "lt2" "psi" "prom" }} 
+{{- $editedNamespace := join "-" $filteredNamespace | lower  }}
+{{- $checksLead := dict }}{{- range $container := $.Values.CONTAINERS }}{{- if $container.lead }}{{ $_ := set $checksLead "lead" $container.presetLabel }}{{- end }}{{- end }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ index $checksLead "lead" }}-{{ $.Values.NAME }}-{{ $jiraTeam }}-{{ $editedNamespace }}
+  labels:
+    version: {{ $.Values.JIRA_ID }}
+    replicas: "{{ tpl $.Values.REPLICAS $ }}"
+spec:
+  replicas: {{ tpl $.Values.REPLICAS $ }}
+  selector:
+    matchLabels:
+    {{- if or  
+      (eq ( index $checksLead "lead" ) "egw")
+      (eq ( index $checksLead "lead" ) "igw")
+    }}
+      {{- $label := (printf "%s-%s-%s-%s-pod" ( index $checksLead "lead" ) $.Values.NAME $jiraTeam $editedNamespace) }}
+      app: {{ $label }}
+      istio: {{ $label }}
+    {{- else }}
+      app: {{ index $checksLead "lead" }}-{{ $.Values.NAME }}-{{ $editedNamespace }}-pod
+    {{- end }}
+  template:
+    metadata:
+      annotations:
+      {{- /*  DISABLED
+# ==================== Setup ISTIO (if appliable) =======================
+        {{- include "istio.annotations" . | nindent 8 }}
+      */}}
+      {{- /*  DISABLED
+# ========================== Setup SECMAN ================================
+        {{- include "secman.config" . | nindent 8 }}
+        {{- range $index, $value := $.Values.CONTAINERS }}
+        {{- include "secman.secrets" (dict "Global" $ "presetLabel" $value.presetLabel) | nindent 8 }}
+        {{- end }}
+      */}}
+      labels:
+      {{- if or  
+        (eq ( index $checksLead "lead") "egw")
+        (eq ( index $checksLead "lead") "igw")
+      }}
+        {{- $label := (printf "%s-%s-%s-%s-pod" ( index $checksLead "lead" ) $.Values.NAME $jiraTeam $editedNamespace) }}
+        app: {{ $label }}
+        istio: {{ $label }}
+      {{- else }}
+        app: {{ index $checksLead "lead" }}-{{ $.Values.NAME }}-{{ $editedNamespace }}-pod
+      {{- end }}
+        {{- if $.Values.SECMAN_SECRETS }}
+        secman-injector: enabled
+        {{- end }}
+    spec:
+# ===================--=== Security context ===--========================
+      {{- include "resources.priority" . | nindent 6 }}
+      automountServiceAccountToken: false
+# ========================= Pod configuration ============================
+      containers:
+      {{- include "deployment.body" . | nindent 6 }}
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
+# ========================== Volume parameters ===========================
+      volumes:
+      {{- $containersVolumes := dict }}
+      {{- range $container := $.Values.CONTAINERS }}
+        {{- $containerVolumes := (concat
+          (default (list) (index $.Values.VOLUME_MOUNTS (printf "default_%s" (upper $container.presetLabel)))) 
+          (default (list) (index $.Values.VOLUME_MOUNTS (upper $container.presetLabel)))
+
+          (default (list) (index $.Values.DCM (printf "default_%s" (upper $container.presetLabel)))) 
+          (default (list) (index $.Values.DCM (upper $container.presetLabel)))
+        )}}
+        {{- range $containerVolume := $containerVolumes }}
+          {{- if not (hasKey $containersVolumes $containerVolume.name) }}
+            {{- $_ := set $containersVolumes $containerVolume.name $containerVolume }}
+          {{- end }}
+        {{- end }}
+      {{- end }}
+      {{- include "deployment.volumes" (dict "Global" $ "volumes" (values $containersVolumes) "name" $.Values.NAME "prefix" $.Values.VOLUME_MOUNTS.PREFIX) | nindent 6 }}

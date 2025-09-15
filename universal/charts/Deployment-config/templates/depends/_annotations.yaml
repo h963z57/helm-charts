@@ -1,0 +1,15 @@
+{{- define "istio.annotations" -}}
+{{- if $.Values.GLOBAL_PARAMS.ISTIO_SC_MODE }}
+# --== Lib deploy istio annotations ==--
+proxy.istio.io/config: |
+  proxyMetadata: {"ISTIO_META_DNS_AUTO_ALLOCATE": "true"{{ if $.Values.GRACEFULL_SHUTDOWN }}, "EXIT_ON_ZERO_ACTIVE_CONNECTIONS": "true"{{ end }}}
+sidecar.istio.io/inject: "true"
+{{- if $.Values.RESOURCES.ISTIO }}
+sidecar.istio.io/proxyCPU: {{ default "250m" ( tpl $.Values.RESOURCES.ISTIO.CPU_REQUESTS $ ) }}
+sidecar.istio.io/proxyCPULimit: {{ default "500m" ( tpl $.Values.RESOURCES.ISTIO.CPU_LIMIT $ ) }}
+sidecar.istio.io/proxyMemory: {{ default "64Mi" ( tpl $.Values.RESOURCES.ISTIO.RAM_REQUESTS $ ) }}
+sidecar.istio.io/proxyMemoryLimit: {{ default "128Mi" ( tpl $.Values.RESOURCES.ISTIO.RAM_LIMIT $ ) }}
+{{- end }}
+sidecar.istio.io/proxyImage: {{ index $.Values.IMAGE_PATHS $.Values.ENVIRONMENT }}/{{ $.Values.IMAGES.ISTIO }}
+{{- end }}
+{{- end -}}

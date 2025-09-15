@@ -1,0 +1,24 @@
+{{- if not $.Values.ISTIO_MODE }}
+{{- $splitNamespace := splitList "-" $.Release.Namespace | rest  }} 
+{{- $filteredNamespace :=  without $splitNamespace "prod" "regress" "ift" "ift1" "ift2" "dev" "lt" "lt1" "lt2" "psi" "prom" }} 
+{{- $editedNamespace := join "-" $filteredNamespace | lower  }}
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ ( index (index $.Values.CONTAINERS 0) "presetLabel" ) }}-{{ $.Values.NAME }}-svc
+spec:
+  ports:
+  {{- range $listIndex , $array := (list 
+    (index $.Values.PORTS (printf "default_%s" (upper ( index (index $.Values.CONTAINERS 0) "presetLabel" )))) 
+    (index $.Values.PORTS (upper ( index (index $.Values.CONTAINERS 0) "presetLabel" )))) 
+  }}
+    {{- range $index, $value := . }}
+  - name: tcp-{{ $value }}
+    port: {{ $value }}
+    protocol: TCP
+    targetPort: {{ $value }}
+    {{- end }}
+  {{- end }}
+  selector:
+    app: {{ ( index (index $.Values.CONTAINERS 0) "presetLabel" ) }}-{{ $.Values.NAME }}-{{ $editedNamespace }}-pod
+{{- end }}

@@ -1,5 +1,9 @@
 # Changelog
 
+## [5.0.0] - 15-Sep-2025
+### Changed
+- Universal update
+
 ## [4.0.0] - 04-Jun-2025
 ### Added
 - depends
