@@ -27,12 +27,6 @@ ENVIRONMENTS:
     - {name: EXAMPLE, type: fieldRef, value: val  }
     - {name: EXAMPLE, type: text,     value: "val"}
 
-# DISABLED
-# SECMAN_SECRETS:
-#   default_EXAMPLE:
-#     - {mountName: example.tet, mountPath: /path/to/, secrets: [{key: key, name: name}]} 
-
-
 VOLUME_MOUNTS:
   default_EXAMPLE:
     - {name: example, mountPath: /destination/path, fieldRef: ["metadata.labels", "metadata.annotations"]                    }
@@ -78,20 +72,10 @@ DCM:
 # {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{[{ >STATIC PARAMETERS< }}]}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 # ==================================================================================================================================================
 
+ENVIRONMENT: prod
+
 IMAGE_PATHS:
   stand: <URL_REGISTRY>
-
-SECMAN_NAMESPACE:
-  stand: <namespace>
-
-SECMAN_PATH:
-  stand: PATH/TO
-
-SECMAN_CONFIG:
-  stand:
-    noclueter:
-      PATH: PATH/TO
-      ROLE: norole
 
 SECURITYCONTEXT:
   default: |-

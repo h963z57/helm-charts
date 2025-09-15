@@ -1,4 +1,3 @@
-{{- $jiraTeam := regexFind "[a-zA-Z]+" $.Values.JIRA_ID | lower }}
 {{- $splitNamespace := splitList "-" $.Release.Namespace | rest  }} 
 {{- $filteredNamespace :=  without $splitNamespace "prod" "regress" "ift" "ift1" "ift2" "dev" "lt" "lt1" "lt2" "psi" "prom" }} 
 {{- $editedNamespace := join "-" $filteredNamespace | lower  }}
@@ -6,7 +5,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ index $checksLead "lead" }}-{{ $.Values.NAME }}-{{ $jiraTeam }}-{{ $editedNamespace }}
+  name: {{ index $checksLead "lead" }}-{{ $.Values.NAME }}-{{ $editedNamespace }}
   labels:
     version: {{ $.Values.JIRA_ID }}
     replicas: "{{ tpl $.Values.REPLICAS $ }}"
@@ -14,44 +13,11 @@ spec:
   replicas: {{ tpl $.Values.REPLICAS $ }}
   selector:
     matchLabels:
-    {{- if or  
-      (eq ( index $checksLead "lead" ) "egw")
-      (eq ( index $checksLead "lead" ) "igw")
-    }}
-      {{- $label := (printf "%s-%s-%s-%s-pod" ( index $checksLead "lead" ) $.Values.NAME $jiraTeam $editedNamespace) }}
-      app: {{ $label }}
-      istio: {{ $label }}
-    {{- else }}
       app: {{ index $checksLead "lead" }}-{{ $.Values.NAME }}-{{ $editedNamespace }}-pod
-    {{- end }}
   template:
     metadata:
-      annotations:
-      {{- /*  DISABLED
-# ==================== Setup ISTIO (if appliable) =======================
-        {{- include "istio.annotations" . | nindent 8 }}
-      */}}
-      {{- /*  DISABLED
-# ========================== Setup SECMAN ================================
-        {{- include "secman.config" . | nindent 8 }}
-        {{- range $index, $value := $.Values.CONTAINERS }}
-        {{- include "secman.secrets" (dict "Global" $ "presetLabel" $value.presetLabel) | nindent 8 }}
-        {{- end }}
-      */}}
       labels:
-      {{- if or  
-        (eq ( index $checksLead "lead") "egw")
-        (eq ( index $checksLead "lead") "igw")
-      }}
-        {{- $label := (printf "%s-%s-%s-%s-pod" ( index $checksLead "lead" ) $.Values.NAME $jiraTeam $editedNamespace) }}
-        app: {{ $label }}
-        istio: {{ $label }}
-      {{- else }}
         app: {{ index $checksLead "lead" }}-{{ $.Values.NAME }}-{{ $editedNamespace }}-pod
-      {{- end }}
-        {{- if $.Values.SECMAN_SECRETS }}
-        secman-injector: enabled
-        {{- end }}
     spec:
 # ===================--=== Security context ===--========================
       {{- include "resources.priority" . | nindent 6 }}

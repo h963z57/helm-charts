@@ -11,10 +11,6 @@ maintainers:
   - name : "Andrei Perepechaev"
 
 dependencies:
-  # DISABLED
-  # - name: Secman-config
-  #   version: 0.0.0
-  #   repository: "file://../libraries/secman"
   - name: Deployment-config
     version: 0.0.0
     repository: "file://../libraries/deployment"
