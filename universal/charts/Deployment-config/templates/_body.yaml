@@ -1,7 +1,6 @@
 {{- define "deployment.body" -}}
-{{- $jiraTeam := regexFind "[a-zA-Z]+" $.Values.JIRA_ID | lower }}
 {{- $splitNamespace := splitList "-" $.Release.Namespace | rest  }} 
-{{- $filteredNamespace :=  without $splitNamespace "prod" "regress" "ift" "ift1" "ift2" "dev" "lt" "lt1" "lt2" "psi" "prom" }} 
+{{- $filteredNamespace :=  without $splitNamespace "prod" "regress" "ift" "ift1" "ift2" "dev" "lt" "lt1" "lt2" "psi" "prom" "ns" }} 
 {{- $editedNamespace := join "-" $filteredNamespace | lower  }}
 {{- range $index, $value := $.Values.CONTAINERS }}
   {{- if not (has $.Values.ENVIRONMENT $value.excludeStands) }}

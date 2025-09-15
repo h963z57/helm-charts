@@ -1,5 +1,5 @@
-{{- $splitNamespace := splitList "-" $.Release.Namespace | rest  }} 
-{{- $filteredNamespace :=  without $splitNamespace "prod" "regress" "ift" "ift1" "ift2" "dev" "lt" "lt1" "lt2" "psi" "prom" }} 
+{{- $splitNamespace := splitList "-" $.Release.Namespace   }} 
+{{- $filteredNamespace :=  without $splitNamespace "prod" "regress" "ift" "ift1" "ift2" "dev" "lt" "lt1" "lt2" "psi" "prom" "ns" }} 
 {{- $editedNamespace := join "-" $filteredNamespace | lower  }}
 {{- $checksLead := dict }}{{- range $container := $.Values.CONTAINERS }}{{- if $container.lead }}{{ $_ := set $checksLead "lead" $container.presetLabel }}{{- end }}{{- end }}
 apiVersion: apps/v1
@@ -7,7 +7,6 @@ kind: Deployment
 metadata:
   name: {{ index $checksLead "lead" }}-{{ $.Values.NAME }}-{{ $editedNamespace }}
   labels:
-    version: {{ $.Values.JIRA_ID }}
     replicas: "{{ tpl $.Values.REPLICAS $ }}"
 spec:
   replicas: {{ tpl $.Values.REPLICAS $ }}

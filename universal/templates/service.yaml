@@ -1,6 +1,6 @@
 {{- if not $.Values.ISTIO_MODE }}
-{{- $splitNamespace := splitList "-" $.Release.Namespace | rest  }} 
-{{- $filteredNamespace :=  without $splitNamespace "prod" "regress" "ift" "ift1" "ift2" "dev" "lt" "lt1" "lt2" "psi" "prom" }} 
+{{- $splitNamespace := splitList "-" $.Release.Namespace }} 
+{{- $filteredNamespace :=  without $splitNamespace "prod" "regress" "ift" "ift1" "ift2" "dev" "lt" "lt1" "lt2" "psi" "prom" "ns" }} 
 {{- $editedNamespace := join "-" $filteredNamespace | lower  }}
 kind: Service
 apiVersion: v1
@@ -13,10 +13,25 @@ spec:
     (index $.Values.PORTS (upper ( index (index $.Values.CONTAINERS 0) "presetLabel" )))) 
   }}
     {{- range $index, $value := . }}
-  - name: tcp-{{ $value }}
-    port: {{ $value }}
-    protocol: TCP
-    targetPort: {{ $value }}
+  ipFamilyPolicy: PreferDualStack
+  ipFamilies:
+  - IPv6
+  - IPv4
+  selector:
+    app: {{ ( index (index $.Values.CONTAINERS 0) "presetLabel" ) }}-{{ $.Values.NAME }}-{{ $editedNamespace }}-pod
+  {{- if $.Values.DIRECT_CONNECTION }}
+  type: LoadBalancer
+  externalTrafficPolicy: Local
+  externalIPs:
+    {{- range $.Values.EXTERNAL_IP}}
+    - {{ . }}
+    {{- end }}
+  {{- end }}
+  ports:
+  - name: {{ $value.protocol | lower }}-{{ $value.name }}
+    port: {{ $value.port }}
+    protocol: {{ $value.protocol | upper }}
+    targetPort: {{ $value.port }}
     {{- end }}
   {{- end }}
   selector:

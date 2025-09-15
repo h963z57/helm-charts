@@ -1,7 +1,8 @@
 {{- define "resources.priority" -}}
 {{- if $.Values.PRIORITY }}
+{{- $checksLead := dict }}{{- range $container := $.Values.CONTAINERS }}{{- if $container.lead }}{{ $_ := set $checksLead "lead" $container.presetLabel }}{{- end }}{{- end }}
 # ========== PRIORITY ===========
-priorityClassName: {{ $.Values.PROJECT_NAME }}-pc
+priorityClassName: {{ index $checksLead "lead" }}-{{ $.Values.NAME }}-pc
 affinity:
   nodeAffinity:
     requiredDuringSchedulingIgnoredDuringExecution:

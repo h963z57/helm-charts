@@ -21,11 +21,11 @@ ARGS:
     - "-b"
     
 ENVIRONMENTS:
-  default_EXAMPLE:
-    - {name: EXAMPLE, type: fieldRef, value: val  }
-    - {name: EXAMPLE, type: text,     value: val  }
-    - {name: EXAMPLE, type: fieldRef, value: val  }
-    - {name: EXAMPLE, type: text,     value: "val"}
+  # default_EXAMPLE:
+  #   - {name: EXAMPLE, type: fieldRef, value: val  }
+  #   - {name: EXAMPLE, type: text,     value: val  }
+  #   - {name: EXAMPLE, type: fieldRef, value: val  }
+  #   - {name: EXAMPLE, type: text,     value: "val"}
 
 VOLUME_MOUNTS:
   default_EXAMPLE:
@@ -74,8 +74,10 @@ DCM:
 
 ENVIRONMENT: prod
 
+REPLICAS: "1"
+
 IMAGE_PATHS:
-  stand: <URL_REGISTRY>
+  prod: <URL_REGISTRY>
 
 SECURITYCONTEXT:
   default: |-
