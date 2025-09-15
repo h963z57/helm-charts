@@ -28,12 +28,12 @@ ENVIRONMENTS:
   #   - {name: EXAMPLE, type: text,     value: "val"}
 
 VOLUME_MOUNTS:
-  default_EXAMPLE:
+  # default_DJANGO:
   #   - {name: example, mountPath: /destination/path, fieldRef: ["metadata.labels", "metadata.annotations"]                    }
   #   - {name: example, mountPath: /destination/path, serviceAccountToken: '{<body>}'                                          }
   #   - {name: example, mountPath: /destination/path, subPath: root-cert.pem, configMapName: existConfigMapName, noPrefix: true}
   #   - {name: example, mountPath: /destination/path, emptyDir: regular                                                        }
-  #   - {name: example, mountPath: /destination/path, emptyDir: memory                                                         }
+    # - {name: example, mountPath: /destination/path, emptyDir: memory                                                         }
 
 
 

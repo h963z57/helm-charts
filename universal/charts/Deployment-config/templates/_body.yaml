@@ -27,7 +27,6 @@
 {{- /* ======================== RESOURCES ================================= */}}
   {{- include "deployment.resources" (dict "Global" $ "presetLabel" $value.presetLabel ) | nindent 2 }}
 {{- /* ======================= VOLUMEMOUNTS =============================== */}}
-  volumeMounts:
   {{- include "deployment.volumeMounts" (dict "Global" $ "presetLabel" $value.presetLabel ) | nindent 2 }}
   {{- end }}
 {{- end }}
