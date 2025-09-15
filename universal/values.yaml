@@ -28,7 +28,7 @@ ENVIRONMENTS:
   #   - {name: EXAMPLE, type: text,     value: "val"}
 
 VOLUME_MOUNTS:
-  # default_DJANGO:
+  default_EXAMPLE:
   #   - {name: example, mountPath: /destination/path, fieldRef: ["metadata.labels", "metadata.annotations"]                    }
   #   - {name: example, mountPath: /destination/path, serviceAccountToken: '{<body>}'                                          }
   #   - {name: example, mountPath: /destination/path, subPath: root-cert.pem, configMapName: existConfigMapName, noPrefix: true}
@@ -40,10 +40,17 @@ VOLUME_MOUNTS:
 PROBES:
   default_DJANGO: 
     readinessProbe: '{failureThreshold: 3, initialDelaySeconds: 60, periodSeconds: 30, successThreshold: 1, tcpSocket: {port: 8000}, timeoutSeconds: 10}'
+  default_PHP: 
+    readinessProbe: '{exec: {command: ["/bin/sh", "-c", "curl -f http://localhost:80/ || exit 1"]}, failureThreshold: 3, initialDelaySeconds: 60, periodSeconds: 30, successThreshold: 1, timeoutSeconds: 10}'
+    livenessProbe:  '{exec: {command: ["/bin/sh", "-c", "curl -f http://localhost:80/ || exit 1"]}, failureThreshold: 3, initialDelaySeconds: 60, periodSeconds: 30, successThreshold: 1, timeoutSeconds: 10}'
+
 
 PORTS:
   default_DJANGO:
     - {name: http, port: 8000,  protocol: TCP}
+  default_PHP:
+  - {name: http, port: 80,  protocol: TCP}
+
 
 
 RESOURCES:
