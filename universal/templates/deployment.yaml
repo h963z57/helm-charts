@@ -6,6 +6,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ index $checksLead "lead" }}-{{ $.Values.NAME }}-{{ $editedNamespace }}
+  namespace: {{ .Release.Namespace }}
   labels:
     replicas: "{{ tpl $.Values.REPLICAS $ }}"
 spec:

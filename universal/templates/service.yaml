@@ -6,6 +6,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: {{ ( index (index $.Values.CONTAINERS 0) "presetLabel" ) }}-{{ $.Values.NAME }}-svc
+  namespace: {{ .Release.Namespace }}
 spec:
   ports:
   {{- range $listIndex , $array := (list 
