@@ -3,3 +3,4 @@
 {{- include "configMaps.DCM" (dict "Global" $ "presetLabel" $value.presetLabel ) | nindent 0 }}
   {{- end }}
 {{- end }}
+{{- include "resources.priorityClass"      . | nindent 0 }}
