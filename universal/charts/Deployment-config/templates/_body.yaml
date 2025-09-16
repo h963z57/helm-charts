@@ -19,7 +19,7 @@
   {{- include "deployment.lifecycle" (dict "Global" $ "presetLabel" $value.presetLabel )       | nindent 2 }}
 {{- /* ===================== SECURITY CONTEXT ============================= */}}
   {{- include "deployment.securityContext" (dict "Global" $ "presetLabel" $value.presetLabel ) | nindent 2 }}  
-{{- /* ========================== Порты =================================== */}}        
+{{- /* ========================== PORTS =================================== */}}        
   {{- include "deployment.ports" (dict "Global" $ "presetLabel" $value.presetLabel )           | nindent 2 }}  
 {{- /* ========================= HARDCODE ================================= */}}
   terminationMessagePath: /dev/termination-log

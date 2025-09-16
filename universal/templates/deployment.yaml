@@ -29,7 +29,6 @@ spec:
       schedulerName: default-scheduler
       terminationGracePeriodSeconds: 30
 # ========================== Volume parameters ===========================
-      volumes:
       {{- $containersVolumes := dict }}
       {{- range $container := $.Values.CONTAINERS }}
         {{- $containerVolumes := (concat

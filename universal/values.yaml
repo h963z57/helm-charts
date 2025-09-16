@@ -54,7 +54,8 @@ PORTS:
 
 
 RESOURCES:
-  default_EXAMPLE: { CPU_LIMIT: "", RAM_LIMIT: "", CPU_REQUESTS: "", RAM_REQUESTS: "" }
+  DJANGO: { CPU_LIMIT: "500m", RAM_LIMIT: "200Mi" }
+  PHP   : { CPU_LIMIT: "200m", RAM_LIMIT: "200Mi" }
 
 DCM:
   default_ASBS:

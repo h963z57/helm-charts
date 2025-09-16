@@ -1,7 +1,9 @@
 {{- define "deployment.volumes" -}}
 {{- $Global := .Global }}
 {{- $checksLead := dict }}{{- range $container := $Global.Values.CONTAINERS }}{{- if $container.lead }}{{ $_ := set $checksLead "lead" $container.presetLabel }}{{- end }}{{- end }}
+{{- if gt (len .volumes) 0 }}
 # --== Lib deploy volumes ==--
+volumes:
 {{- range $index, $value := .volumes }}
 {{- if $value.hostPath }}
 # == Volumes {{ $value.name }} hostPath ==
@@ -61,6 +63,7 @@
 - name: {{ $value.name }}-volume
   emptyDir: 
     medium: Memory
+{{- end }}
 {{- end }}
 {{- end }}
 {{- end -}}
