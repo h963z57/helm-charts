@@ -88,6 +88,6 @@ SECURITYCONTEXT:
       drop:
         - ALL
     privileged: false
-    runAsNonRoot: true
-    readOnlyRootFilesystem: true
+    # runAsNonRoot: true
+    # readOnlyRootFilesystem: true
     allowPrivilegeEscalation: false
