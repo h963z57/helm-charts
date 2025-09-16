@@ -80,7 +80,7 @@ ENVIRONMENT: prod
 REPLICAS: "1"
 
 IMAGE_PATHS:
-  prod: registry-1.docker.io
+  prod: docker.io
 
 SECURITYCONTEXT:
   default: |-
