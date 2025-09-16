@@ -1,6 +1,9 @@
 {{- define "deployment.resources" -}}
 {{- $Global := .Global }}
 # --== Lib deploy resources ==--
+{{- if or 
+  ((index $Global.Values.RESOURCES (upper .presetLabel)))
+}}
 resources:
   {{- if (index $Global.Values.RESOURCES (upper .presetLabel)).CPU_LIMIT  }}
   {{- if (index $Global.Values.RESOURCES (upper .presetLabel)).RAM_LIMIT  }}
@@ -16,4 +19,5 @@ resources:
     memory: {{ tpl (index (index $Global.Values.RESOURCES (upper .presetLabel)) "RAM_REQUESTS") $Global | quote }}
   {{- end }}
   {{- end }}
+{{- end }}
 {{- end -}}
