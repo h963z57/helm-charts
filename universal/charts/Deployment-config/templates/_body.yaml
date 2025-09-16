@@ -1,12 +1,13 @@
 {{- define "deployment.body" -}}
-{{- $splitNamespace := splitList "-" $.Release.Namespace | rest  }} 
+{{- $splitNamespace := splitList "-" $.Release.Namespace }} 
 {{- $filteredNamespace :=  without $splitNamespace "prod" "regress" "ift" "ift1" "ift2" "dev" "lt" "lt1" "lt2" "psi" "prom" "ns" }} 
 {{- $editedNamespace := join "-" $filteredNamespace | lower  }}
+{{- $checksLead := dict }}{{- range $container := $.Values.CONTAINERS }}{{- if $container.lead }}{{ $_ := set $checksLead "lead" $container.presetLabel }}{{- end }}{{- end }}
 {{- range $index, $value := $.Values.CONTAINERS }}
   {{- if not (has $.Values.ENVIRONMENT $value.excludeStands) }}
 # --== Create {{ $value.presetLabel }} pod ==--
 {{- /* ======================== Конфигурация образа =========================== */}}
-- name: {{ $value.presetLabel | lower }}-{{ $.Values.NAME }}-{{ $editedNamespace }}
+- name: {{ index $checksLead "lead" }}-{{ $.Values.NAME }}-{{ $editedNamespace }}
   image: {{ index $.Values.IMAGE_PATHS $.Values.ENVIRONMENT }}/{{ index $.Values.IMAGES (upper $value.presetLabel) }}
   imagePullPolicy: Always
 {{- /* ===================== ARGS $ COMMANDS  ============================= */}}
