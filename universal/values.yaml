@@ -87,7 +87,7 @@ SECURITYCONTEXT:
     capabilities: 
       drop:
         - ALL
-    privileged: false
+    # privileged: false
     # runAsNonRoot: true
     # readOnlyRootFilesystem: true
-    allowPrivilegeEscalation: false
+    # allowPrivilegeEscalation: false
