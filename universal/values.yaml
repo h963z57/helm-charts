@@ -68,7 +68,7 @@ PORTS:
     - {name: prometheus, port: 9090,  protocol: TCP}
   default_REDIS:
     - {name: redis,      port: 6379,  protocol: TCP}
-  default_KEYCLOCK:
+  default_KEYCLOAK:
     - {name: http-dashboard,  port: 8080,  protocol: TCP}
     # - {name: http-management, port: 9000,  protocol: TCP}
 
