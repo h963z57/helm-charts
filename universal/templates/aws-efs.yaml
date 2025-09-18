@@ -1,0 +1,62 @@
+{{- $splitNamespace := splitList "-" $.Release.Namespace   }} 
+{{- $filteredNamespace :=  without $splitNamespace "prod" "regress" "ift" "ift1" "ift2" "dev" "lt" "lt1" "lt2" "psi" "prom" "ns" }} 
+{{- $editedNamespace := join "-" $filteredNamespace | lower  }}
+{{- $checksLead := dict }}{{- range $container := $.Values.CONTAINERS }}{{- if $container.lead }}{{ $_ := set $checksLead "lead" $container.presetLabel }}{{- end }}{{- end }}
+
+{{- $containersVolumes := dict }}
+{{- range $container := $.Values.CONTAINERS }}
+  {{- $containerVolumes := (concat
+    (default (list) (index $.Values.VOLUME_MOUNTS (printf "default_%s" (upper $container.presetLabel)))) 
+    (default (list) (index $.Values.VOLUME_MOUNTS (upper $container.presetLabel)))
+
+    (default (list) (index $.Values.DCM (printf "default_%s" (upper $container.presetLabel)))) 
+    (default (list) (index $.Values.DCM (upper $container.presetLabel)))
+  )}}
+  {{- range $containerVolume := $containerVolumes }}
+    {{- if not (hasKey $containersVolumes $containerVolume.name) }}
+      {{- $_ := set $containersVolumes $containerVolume.name $containerVolume }}
+    {{- end }}
+  {{- end }}
+{{- end }}
+{{- range $index, $value := $containersVolumes }}
+  {{- if .aws_efs_id }}
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: {{ .name }}-sc
+provisioner: efs.csi.aws.com
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ index $checksLead "lead" }}-{{ $.Values.NAME }}-{{ .name }}-pv
+  namespace: {{ $.Release.Namespace }}
+spec:
+  capacity:
+    storage: {{ .storage }}
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: {{ .name }}-sc
+  csi:
+    driver: efs.csi.aws.com
+    volumeHandle: {{ .aws_efs_id }}::{{ .aws_efs_ap }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ index $checksLead "lead" }}-{{ $.Values.NAME }}-{{ .name }}-pvc
+  namespace: {{ $.Release.Namespace }}
+spec:
+  storageClassName: {{ .name }}-sc
+  volumeName: {{ index $checksLead "lead" }}-{{ $.Values.NAME }}-{{ .name }}-pv
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .storage }}
+---
+  {{- end }}
+{{- end }}

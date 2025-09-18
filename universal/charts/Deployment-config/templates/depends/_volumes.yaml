@@ -18,6 +18,10 @@ volumes:
     items:
     - key: {{ $value.key }}
       path: {{ $value.subPath }}
+{{- else if .aws_efs_id }}
+- name: {{ .name }}-volume
+  persistentVolumeClaim:
+    claimName: {{ index $checksLead "lead" }}-{{ $.name }}-{{ .name }}-pvc
 {{- else if $value.fieldRef }}
 # == Volumes {{ $value.name }} fieldRef ==
 - name: {{ $value.name }}-volume

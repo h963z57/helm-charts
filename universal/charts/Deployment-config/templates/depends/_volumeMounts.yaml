@@ -31,6 +31,10 @@ volumeMounts:
   {{- if $value.readOnly }}
   readOnly: {{ $value.readOnly }}
   {{- end }}
+{{- else if .aws_efs_id }}
+- name: {{ .name }}-volume
+  mountPath: {{ .mountPath }}
+  readOnly: {{ .readOnly }}
 {{- else if $value.fieldRef }}
 # == VolumeMount {{ $value.name }} fieldRef ==
 - name: {{ $value.name }}-volume
