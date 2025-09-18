@@ -1,0 +1,41 @@
+{{- define "resources.pvc" -}}
+{{- if .Values.VOLUME_MOUNTS }}
+{{- range .Values.VOLUME_MOUNTS }}
+{{- if .aws_efs_id }}
+{{- $checksLead := dict }}{{- range $container := $.Values.CONTAINERS }}{{- if $container.lead }}{{ $_ := set $checksLead "lead" $container.presetLabel }}{{- end }}{{- end }}
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ index $checksLead "lead" }}-{{ $.Values.NAME }}-{{ .name }}-pv
+  namespace: {{ $.Release.Namespace }}
+spec:
+  capacity:
+    storage: {{ .storage }}
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: {{ .name }}-sc
+  csi:
+    driver: efs.csi.aws.com
+    volumeHandle: {{ .aws_efs_id }}::{{ .aws_efs_ap }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ index $checksLead "lead" }}-{{ $.Values.NAME }}-{{ .name }}-pvc
+  namespace: {{ $.Release.Namespace }}
+spec:
+  storageClassName: {{ .name }}-sc
+  volumeName: {{ index $checksLead "lead" }}-{{ $.Values.NAME }}-{{ .name }}-pv
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .storage }}
+---
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end -}}

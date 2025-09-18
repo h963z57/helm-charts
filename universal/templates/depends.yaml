@@ -4,3 +4,6 @@
   {{- end }}
 {{- end }}
 {{- include "resources.priorityClass"      . | nindent 0 }}
+{{- include "resources.hpa"                . | nindent 0 }}
+{{- include "resources.pvc"                . | nindent 0 }}
+{{- include "resources.storageClass"       . | nindent 0 }}

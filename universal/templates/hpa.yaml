@@ -1,0 +1,36 @@
+{{- define "resources.hpa" -}}
+{{- if $.Values.HPA }}
+{{- $checksLead := dict }}{{- range $container := $.Values.CONTAINERS }}{{- if $container.lead }}{{ $_ := set $checksLead "lead" $container.presetLabel }}{{- end }}{{- end }}
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ index $checksLead "lead" }}-{{ $.Values.NAME }}-hpa
+  namespace: {{ .Release.Namespace }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ index $checksLead "lead" }}-{{ $.Values.NAME }}-{{ $editedNamespace }}-deploy
+  minReplicas: {{ $.Values.HPA.MINREPL }}
+  maxReplicas: {{ $.Values.HPA.MAXREPL }}
+  metrics:
+  {{- if $.Values.HPA.TYPE.CPU }}
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: {{ $.Values.HPA.TYPE.CPU }}
+  {{- end }}
+  {{- if $.Values.HPA.TYPE.RAM }}
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: {{ $.Values.HPA.TYPE.RAM }}
+  {{- end }}
+{{- end }}
+---
+{{- end -}}
