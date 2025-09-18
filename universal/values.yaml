@@ -68,7 +68,7 @@ RESOURCES:
   GRAFANA:
 
 DCM:
-  default_ASBS:
+  default_EXAMPLE:
   #   - name: config-file
   #     mountPath: /app/il/tmp/conf
   #     configMapName: tomcat-cm
@@ -76,6 +76,28 @@ DCM:
   #     content:
   #     - data: |-
   #         <body>
+
+DCM:
+  default_PROMETHEUS:
+    - name: prometheus
+      mountPath: /etc/prometheus
+      configMapName: prometheus-config
+      subPath: prometheus.yml
+      content:
+      - data: |-
+          global:
+            scrape_interval: 15s
+          scrape_configs:
+            {{- range $index, $value := $.Values.CONFIGMAPS.PROMETHEUS.HOSTS }}
+            - job_name: '{{ $value.jobName }}'
+              scrape_interval: 5s
+              static_configs:
+                {{- range $targetIndex, $target := $value.targets }}
+                - targets: ['{{ $target.url }}']
+                  labels:
+                    instance: "{{ $target.labels }}"
+                {{- end }}
+            {{- end }}
 
 # GRACEFULL_SHUTDOWN:
 #   ASBS:
