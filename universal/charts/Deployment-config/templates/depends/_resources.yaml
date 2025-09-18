@@ -1,9 +1,9 @@
 {{- define "deployment.resources" -}}
 {{- $Global := .Global }}
-# --== Lib deploy resources ==--
 {{- if or 
   ((index $Global.Values.RESOURCES (upper .presetLabel)))
 }}
+# --== Lib deploy resources ==--
 resources:
   {{- if (index $Global.Values.RESOURCES (upper .presetLabel)).CPU_LIMIT  }}
   {{- if (index $Global.Values.RESOURCES (upper .presetLabel)).RAM_LIMIT  }}

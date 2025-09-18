@@ -1,11 +1,11 @@
 {{- define "configMaps.DCM" -}}
 {{- $Global := .Global }}
 {{- $checksLead := dict }}{{- range $container := $Global.Values.CONTAINERS }}{{- if $container.lead }}{{ $_ := set $checksLead "lead" $container.presetLabel }}{{- end }}{{- end }}
-# --== Lib deploy Dynamic ConfigMap ==--
 {{- if or 
   (index $Global.Values.DCM (printf "default_%s" (upper .presetLabel))) 
   (index $Global.Values.DCM (upper .presetLabel)) 
 }}
+# --== Lib deploy Dynamic ConfigMap ==--
   {{- range $listIndex , $array := (list 
     (index $Global.Values.DCM (printf "default_%s" (upper .presetLabel))) 
     (index $Global.Values.DCM (upper .presetLabel))

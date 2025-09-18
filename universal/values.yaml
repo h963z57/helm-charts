@@ -40,6 +40,7 @@ VOLUME_MOUNTS:
 PROBES:
   default_DJANGO: 
     readinessProbe: '{failureThreshold: 3, initialDelaySeconds: 60, periodSeconds: 30, successThreshold: 1, tcpSocket: {port: 8000}, timeoutSeconds: 10}'
+    livenessProbe : '{failureThreshold: 3, initialDelaySeconds: 60, periodSeconds: 30, successThreshold: 1, tcpSocket: {port: 8000}, timeoutSeconds: 10}'
   default_PHP: 
     readinessProbe: '{exec: {command: ["/bin/sh", "-c", "curl -f http://localhost:80/ || exit 1"]}, failureThreshold: 3, initialDelaySeconds: 60, periodSeconds: 30, successThreshold: 1, timeoutSeconds: 10}'
     livenessProbe:  '{exec: {command: ["/bin/sh", "-c", "curl -f http://localhost:80/ || exit 1"]}, failureThreshold: 3, initialDelaySeconds: 60, periodSeconds: 30, successThreshold: 1, timeoutSeconds: 10}'
@@ -49,8 +50,9 @@ PROBES:
   default_PROMETHEUS:
     livenessProbe : '{httpGet: {path: /-/healthy, port: 9090}, initialDelaySeconds: 30, timeoutSeconds: 5, periodSeconds: 10, failureThreshold: 3}'
     readinessProbe: '{httpGet: {path: /-/ready,   port: 9090}, initialDelaySeconds: 10, timeoutSeconds: 5, periodSeconds: 10, failureThreshold: 3}'
-      
-  
+  default_REDIS:
+    readinessProbe: '{failureThreshold: 3, initialDelaySeconds: 60, periodSeconds: 30, successThreshold: 1, tcpSocket: {port: 6379}, timeoutSeconds: 10}'
+    livenessProbe : '{failureThreshold: 3, initialDelaySeconds: 60, periodSeconds: 30, successThreshold: 1, tcpSocket: {port: 6379}, timeoutSeconds: 10}'
 
 PORTS:
   default_DJANGO:
@@ -61,21 +63,23 @@ PORTS:
     - {name: http,       port: 3000,  protocol: TCP}
   default_PROMETHEUS:
     - {name: prometheus, port: 9090,  protocol: TCP}
+  default_REDIS:
+    - {name: redis,      port: 6379,  protocol: TCP}
 
 RESOURCES:
-  DJANGO : { CPU_REQUESTS: "100m", CPU_LIMIT: "500m", RAM_REQUESTS: "100Mi", RAM_LIMIT: "200Mi" }
-  PHP    : { CPU_REQUESTS: "50m",  CPU_LIMIT: "200m", RAM_REQUESTS: "100Mi", RAM_LIMIT: "200Mi" }
-  GRAFANA:
-
-DCM:
   default_EXAMPLE:
-  #   - name: config-file
-  #     mountPath: /app/il/tmp/conf
-  #     configMapName: tomcat-cm
-  #     subPath: web.xml
-  #     content:
-  #     - data: |-
-  #         <body>
+  # DJANGO: { CPU_REQUESTS: "100m", CPU_LIMIT: "500m", RAM_REQUESTS: "100Mi", RAM_LIMIT: "200Mi" }
+  # PHP   : { CPU_REQUESTS: "50m",  CPU_LIMIT: "200m", RAM_REQUESTS: "100Mi", RAM_LIMIT: "200Mi" }
+
+# DCM:
+#   default_EXAMPLE:
+#     - name: config-file
+#       mountPath: /app/il/tmp/conf
+#       configMapName: tomcat-cm
+#       subPath: web.xml
+#       content:
+#       - data: |-
+#           <body>
 
 DCM:
   default_PROMETHEUS:
