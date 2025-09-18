@@ -73,7 +73,7 @@ PORTS:
     # - {name: http-management, port: 9000,  protocol: TCP}
 
 RESOURCES:
-  default_EXAMPLE:
+  EXAMPLE:
   # DJANGO: { CPU_REQUESTS: "100m", CPU_LIMIT: "500m", RAM_REQUESTS: "100Mi", RAM_LIMIT: "200Mi" }
   # PHP   : { CPU_REQUESTS: "50m",  CPU_LIMIT: "200m", RAM_REQUESTS: "100Mi", RAM_LIMIT: "200Mi" }
 

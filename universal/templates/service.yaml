@@ -1,4 +1,3 @@
-{{- if not $.Values.ISTIO_MODE }}
 {{- $splitNamespace := splitList "-" $.Release.Namespace }} 
 {{- $filteredNamespace :=  without $splitNamespace "prod" "regress" "ift" "ift1" "ift2" "dev" "lt" "lt1" "lt2" "psi" "prom" "ns" }} 
 {{- $editedNamespace := join "-" $filteredNamespace | lower  }}
@@ -8,12 +7,6 @@ metadata:
   name: {{ ( index (index $.Values.CONTAINERS 0) "presetLabel" ) }}-{{ $.Values.NAME }}-svc
   namespace: {{ .Release.Namespace }}
 spec:
-  ports:
-  {{- range $listIndex , $array := (list 
-    (index $.Values.PORTS (printf "default_%s" (upper ( index (index $.Values.CONTAINERS 0) "presetLabel" )))) 
-    (index $.Values.PORTS (upper ( index (index $.Values.CONTAINERS 0) "presetLabel" )))) 
-  }}
-    {{- range $index, $value := . }}
   ipFamilyPolicy: PreferDualStack
   ipFamilies:
   - IPv6
@@ -29,12 +22,16 @@ spec:
     {{- end }}
   {{- end }}
   ports:
+{{- range $listIndex , $array := (list 
+  (index $.Values.PORTS (printf "default_%s" (upper ( index (index $.Values.CONTAINERS 0) "presetLabel" )))) 
+  (index $.Values.PORTS (upper ( index (index $.Values.CONTAINERS 0) "presetLabel" )))) 
+}}
+  {{- range $index, $value := . }}
   - name: {{ $value.protocol | lower }}-{{ $value.name }}
     port: {{ $value.port }}
     protocol: {{ $value.protocol | upper }}
     targetPort: {{ $value.port }}
-    {{- end }}
+  {{- end }}
   {{- end }}
   selector:
     app: {{ ( index (index $.Values.CONTAINERS 0) "presetLabel" ) }}-{{ $.Values.NAME }}-{{ $editedNamespace }}-pod
-{{- end }}
