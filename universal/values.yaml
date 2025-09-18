@@ -60,7 +60,6 @@ PROBES:
     readinessProbe: '{failureThreshold: 3, initialDelaySeconds: 60, periodSeconds: 30, successThreshold: 1, tcpSocket: {port: 25}, timeoutSeconds: 10}'
     livenessProbe : '{failureThreshold: 3, initialDelaySeconds: 60, periodSeconds: 30, successThreshold: 1, tcpSocket: {port: 25}, timeoutSeconds: 10}'
 
-
 PORTS:
   default_DJANGO:
     - {name: http,       port: 8000,  protocol: TCP}
