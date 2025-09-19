@@ -2,8 +2,13 @@
 {{- $filteredNamespace :=  without $splitNamespace "prod" "regress" "ift" "ift1" "ift2" "dev" "lt" "lt1" "lt2" "psi" "prom" "ns" }} 
 {{- $editedNamespace := join "-" $filteredNamespace | lower  }}
 {{- $checksLead := dict }}{{- range $container := $.Values.CONTAINERS }}{{- if $container.lead }}{{ $_ := set $checksLead "lead" $container.presetLabel }}{{- end }}{{- end }}
+---
 apiVersion: apps/v1
+{{- if $.Values.DAEMONSET }}
+kind: DaemonSet
+{{- else }}
 kind: Deployment
+{{- end }}
 metadata:
   name: {{ index $checksLead "lead" }}-{{ $.Values.NAME }}-{{ $editedNamespace }}
   namespace: {{ .Release.Namespace }}
@@ -21,7 +26,11 @@ spec:
     spec:
 # ===================--=== Security context ===--========================
       {{- include "resources.priority" . | nindent 6 }}
+    {{- if eq ( index $checksLead "lead" ) "traefik" }}
+      serviceAccountName: traefik-ingress-controller
+    {{- else }}
       automountServiceAccountToken: false
+    {{- end }}
 # ========================= Pod configuration ============================
       containers:
       {{- include "deployment.body" . | nindent 6 }}

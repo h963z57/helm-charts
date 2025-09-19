@@ -1,3 +1,5 @@
+{{- $checksLead := dict }}{{- range $container := $.Values.CONTAINERS }}{{- if $container.lead }}{{ $_ := set $checksLead "lead" $container.presetLabel }}{{- end }}{{- end }}
+
 {{- range $index, $value := $.Values.CONTAINERS }}
   {{- if not (has $.Values.ENVIRONMENT $value.excludeStands) }}
 {{- include "configMaps.DCM" (dict "Global" $ "presetLabel" $value.presetLabel ) | nindent 0 }}
@@ -5,3 +7,10 @@
 {{- end }}
 {{- include "resources.priorityClass"      . | nindent 0 }}
 {{- include "resources.hpa"                . | nindent 0 }}
+
+{{- if eq ( index $checksLead "lead" ) "traefik" }}
+{{- include "traefik.ServiceAccount"           . | nindent 0 }}
+{{- include "traefik.CustomResourceDefinition" . | nindent 0 }}
+{{- include "traefik.ClusterRoleBinding"       . | nindent 0 }}
+{{- include "traefik.ClusterRole"              . | nindent 0 }}
+{{- end }}

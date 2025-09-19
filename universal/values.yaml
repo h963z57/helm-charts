@@ -83,6 +83,7 @@ RESOURCES:
   EXAMPLE:
   # DJANGO: { CPU_REQUESTS: "100m", CPU_LIMIT: "500m", RAM_REQUESTS: "100Mi", RAM_LIMIT: "200Mi" }
   # PHP   : { CPU_REQUESTS: "50m",  CPU_LIMIT: "200m", RAM_REQUESTS: "100Mi", RAM_LIMIT: "200Mi" }
+  TRAEFIK : { CPU_REQUESTS: "50m",  CPU_LIMIT: "200m", RAM_REQUESTS: "100Mi", RAM_LIMIT: "300Mi" }
 
 # DCM:
 #   default_EXAMPLE:
@@ -117,7 +118,7 @@ DCM:
             {{- end }}
 
 # GRACEFULL_SHUTDOWN:
-#   ASBS:
+#   EXAMPLE:
 #     - {name: lifecycle,  httpGet: {path: /il/sys/shutdown.jsps, port: 9080, scheme: HTTP}}
 
 # ==================================================================================================================================================

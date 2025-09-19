@@ -1,9 +1,0 @@
-{{- include "resources.priorityClass"      . | nindent 0 }}
-{{- include "resources.pvc"                . | nindent 0 }}
-{{- include "resources.storageClass"       . | nindent 0 }}
-{{- include "resources.svc"                . | nindent 0 }}
-{{- include "resources.hpa"                . | nindent 0 }}
-
-{{- if and $.Values.CONFIGMAPS $.Values.CONFIGMAPS.PROMETHEUS }}
-{{- include "configmaps.prometheus.config" . | nindent 0 }}
-{{- end }}

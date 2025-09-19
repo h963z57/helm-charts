@@ -9,8 +9,3 @@ maintainers:
   - name : "Roman Bykov"
     email: all@h963z57.com
   - name : "Andrei Perepechaev"
-
-dependencies:
-  - name: Deployment-config
-    version: 0.0.0
-    repository: "file://../libraries/deployment"
