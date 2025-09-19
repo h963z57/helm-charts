@@ -1,0 +1,72 @@
+{{- define "deployment.volumeMounts" -}}
+{{- $Global := .Global }}
+{{- if gt (len (concat 
+  (default (list) (index $Global.Values.VOLUME_MOUNTS (printf "default_%s" (upper .presetLabel)))) 
+  (default (list) (index $Global.Values.VOLUME_MOUNTS (upper .presetLabel)))
+
+  (default (list) (index $Global.Values.DCM (printf "default_%s" (upper .presetLabel)))) 
+  (default (list) (index $Global.Values.DCM (upper .presetLabel)))
+)) 0 }}
+# --== Lib deploy volumeMounts ==--
+volumeMounts:
+{{- range $index, $value := (concat 
+  (default (list) (index $Global.Values.VOLUME_MOUNTS (printf "default_%s" (upper .presetLabel)))) 
+  (default (list) (index $Global.Values.VOLUME_MOUNTS (upper .presetLabel)))
+
+  (default (list) (index $Global.Values.DCM (printf "default_%s" (upper .presetLabel)))) 
+  (default (list) (index $Global.Values.DCM (upper .presetLabel)))
+)}}
+{{- if $value.hostPath}}
+# == VolumeMount {{ .name }} hostPath ==
+- name: {{ $value.name }}-volume
+  mountPath: {{ $value.mountPath }}
+  {{- if $value.readOnly }}
+  readOnly: {{ $value.readOnly }}
+  {{- end }}
+{{- else if $value.secretName }}
+# == VolumeMount {{ .name }} secret ==
+- name: {{ $value.name }}-volume
+  mountPath: {{ $value.mountPath }}
+  subPath: {{ $value.subPath }}
+  {{- if $value.readOnly }}
+  readOnly: {{ $value.readOnly }}
+  {{- end }}
+{{- else if .aws_efs_id }}
+- name: {{ .name }}-volume
+  mountPath: {{ .mountPath }}
+  readOnly: {{ .readOnly }}
+{{- else if $value.fieldRef }}
+# == VolumeMount {{ $value.name }} fieldRef ==
+- name: {{ $value.name }}-volume
+  mountPath: {{ $value.mountPath }}
+{{- else if $value.serviceAccountToken }}
+# == VolumeMount {{ $value.name }} serviceAccountToken ==
+- name: {{ $value.name }}-volume
+  readOnly: true
+  mountPath: {{ $value.mountPath }}
+{{- else if $value.configMapName }}
+# == VolumeMount {{ $value.name }} configMap ==
+- name: {{ $value.name }}-volume
+  mountPath: {{ $value.mountPath }}/{{ $value.subPath }}
+  subPath: {{ $value.subPath }}
+  {{- if $value.readOnly }}
+  readOnly: {{ $value.readOnly }}
+  {{- end }}
+{{- else if eq $value.emptyDir "regular" }}
+# == VolumeMount {{ $value.name }} emptyDir ==
+- name: {{ $value.name }}-volume
+  mountPath: {{ $value.mountPath }}
+  {{- if $value.readOnly }}
+  readOnly: {{ $value.readOnly }}
+  {{- end }}
+{{- else if eq $value.emptyDir "memory" }}
+# == VolumeMount {{ $value.name }} emptyDir memory ==
+- name: {{ $value.name }}-volume
+  mountPath: {{ $value.mountPath }}
+  {{- if $value.readOnly }}
+  readOnly: {{ $value.readOnly }}
+  {{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end -}}

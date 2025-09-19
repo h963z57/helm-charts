@@ -1,0 +1,10 @@
+{{- define "deployment.probes" -}}
+{{- $Global := .Global }}
+# --== Lib deploy probes ==--
+{{- $probes := mergeOverwrite 
+  (default (dict) (index $Global.Values.PROBES (printf "default_%s" (upper .presetLabel)))) 
+  (default (dict) (index $Global.Values.PROBES (upper .presetLabel))) }}
+{{- range $probe, $value := $probes}}
+{{ $probe }}: {{ $value }}
+{{- end }}
+{{- end -}}

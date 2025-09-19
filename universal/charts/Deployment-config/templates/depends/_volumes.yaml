@@ -1,0 +1,73 @@
+{{- define "deployment.volumes" -}}
+{{- $Global := .Global }}
+{{- $checksLead := dict }}{{- range $container := $Global.Values.CONTAINERS }}{{- if $container.lead }}{{ $_ := set $checksLead "lead" $container.presetLabel }}{{- end }}{{- end }}
+{{- if gt (len .volumes) 0 }}
+# --== Lib deploy volumes ==--
+volumes:
+{{- range $index, $value := .volumes }}
+{{- if $value.hostPath }}
+# == Volumes {{ $value.name }} hostPath ==
+- name: {{ $value.name }}-volume
+  hostPath:
+    path: {{ $value.hostPath }}
+{{- else if $value.secretName }}
+# == Volumes {{ $value.name }} secret ==
+- name: {{ $value.name }}-volume
+  secret:
+    secretName: {{ $value.secretName }}
+    items:
+    - key: {{ $value.key }}
+      path: {{ $value.subPath }}
+{{- else if .aws_efs_id }}
+- name: {{ .name }}-volume
+  persistentVolumeClaim:
+    claimName: {{ index $checksLead "lead" }}-{{ $.name }}-{{ .name }}-pvc
+{{- else if $value.fieldRef }}
+# == Volumes {{ $value.name }} fieldRef ==
+- name: {{ $value.name }}-volume
+  downwardAPI:
+    items:
+      {{- range $value.labels }}
+      - path: labels
+        fieldRef:
+          apiVersion: v1
+          fieldPath: {{ . }}
+      {{- end }}
+    defaultMode: 256
+{{- else if $value.serviceAccountToken }}
+# == Volumes {{ $value.name }} serviceAccountToken ==
+- name: {{ $value.name }}-volume
+  projected:
+    sources:
+      - serviceAccountToken: {{ $value.serviceAccountToken }}
+    defaultMode: {{ default "256" $value.defaultMode }}
+{{- else if $value.configMapName }}
+# == Volumes {{ $value.name }} configMap ==
+- name: {{ $value.name }}-volume
+  configMap:
+    {{- if $value.noPrefix }}
+    name: {{ $value.configMapName }}
+    {{- else }}
+    name: {{ index $checksLead "lead" }}-{{ $.name }}-{{ $value.configMapName }}
+    {{- end  }}
+    items:
+    - key: {{ $value.subPath }}
+      path: {{ $value.subPath }}
+    {{- if $value.defaultMode }}
+    defaultMode: {{ $value.defaultMode }}
+    {{- else }}
+    defaultMode: 256
+    {{- end }}
+{{- else if eq $value.emptyDir "regular" }}
+# == Volumes {{ $value.name }} emptyDir ==
+- name: {{ $value.name }}-volume
+  emptyDir: {}
+{{- else if eq $value.emptyDir "memory" }}
+# == Volumes {{ $value.name }} emptyDir memory ==
+- name: {{ $value.name }}-volume
+  emptyDir: 
+    medium: Memory
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end -}}

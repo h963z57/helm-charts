@@ -11,6 +11,9 @@ kind: IngressRouteTCP
 metadata:
   name: {{ $value.name }}-{{ $value.port }}-ingress
   namespace: {{ $ruleNamespace }}
+  labels:
+    app.kubernetes.io/part-of  : {{ $ruleNamespace }}
+    app.kubernetes.io/component: network
 spec:
   entryPoints:
     {{- range $indexEntryPoint, $entryPoint := $value.entryPoints }}

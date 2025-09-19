@@ -1,0 +1,59 @@
+{{- $splitNamespace := splitList "-" $.Release.Namespace   }} 
+{{- $filteredNamespace :=  without $splitNamespace "prod" "regress" "ift" "ift1" "ift2" "dev" "lt" "lt1" "lt2" "psi" "prom" "ns" }} 
+{{- $editedNamespace := join "-" $filteredNamespace | lower  }}
+{{- $checksLead := dict }}{{- range $container := $.Values.CONTAINERS }}{{- if $container.lead }}{{ $_ := set $checksLead "lead" $container.presetLabel }}{{- end }}{{- end }}
+---
+apiVersion: apps/v1
+{{- if $.Values.DAEMONSET }}
+kind: DaemonSet
+{{- else }}
+kind: Deployment
+{{- end }}
+metadata:
+  name: {{ index $checksLead "lead" }}-{{ $.Values.NAME }}-{{ $editedNamespace }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    replicas: "{{ tpl $.Values.REPLICAS $ }}"
+    app.kubernetes.io/part-of  : {{ $.Release.Namespace }}
+    app.kubernetes.io/component: app
+spec:
+  replicas: {{ tpl $.Values.REPLICAS $ }}
+  selector:
+    matchLabels:
+      app: {{ index $checksLead "lead" }}-{{ $.Values.NAME }}-{{ $editedNamespace }}-pod
+  template:
+    metadata:
+      labels:
+        app: {{ index $checksLead "lead" }}-{{ $.Values.NAME }}-{{ $editedNamespace }}-pod
+    spec:
+# ===================--=== Security context ===--========================
+      {{- include "resources.priority" . | nindent 6 }}
+    {{- if eq ( index $checksLead "lead" ) "traefik" }}
+      serviceAccountName: traefik-ingress-controller
+    {{- else }}
+      automountServiceAccountToken: false
+    {{- end }}
+# ========================= Pod configuration ============================
+      containers:
+      {{- include "deployment.body" . | nindent 6 }}
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
+# ========================== Volume parameters ===========================
+      {{- $containersVolumes := dict }}
+      {{- range $container := $.Values.CONTAINERS }}
+        {{- $containerVolumes := (concat
+          (default (list) (index $.Values.VOLUME_MOUNTS (printf "default_%s" (upper $container.presetLabel)))) 
+          (default (list) (index $.Values.VOLUME_MOUNTS (upper $container.presetLabel)))
+
+          (default (list) (index $.Values.DCM (printf "default_%s" (upper $container.presetLabel)))) 
+          (default (list) (index $.Values.DCM (upper $container.presetLabel)))
+        )}}
+        {{- range $containerVolume := $containerVolumes }}
+          {{- if not (hasKey $containersVolumes $containerVolume.name) }}
+            {{- $_ := set $containersVolumes $containerVolume.name $containerVolume }}
+          {{- end }}
+        {{- end }}
+      {{- end }}
+      {{- include "deployment.volumes" (dict "Global" $ "volumes" (values $containersVolumes) "name" $.Values.NAME "prefix" $.Values.VOLUME_MOUNTS.PREFIX) | nindent 6 }}

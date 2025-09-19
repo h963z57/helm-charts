@@ -1,0 +1,10 @@
+apiVersion: v2
+appVersion: 0.0.0
+description: A library for deployment
+maintainers:
+- name : "Roman Bykov"
+  email: all@h963z57.com
+- name : "Andrei Perepechaev"
+name: Deployment-config
+type: library
+version: 0.0.0

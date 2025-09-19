@@ -1,0 +1,9 @@
+{{- define "deployment.securityContext" -}}
+{{- $Global := .Global }}
+# --== Lib deploy securityContext ==--
+securityContext:
+  {{- /* {{- (index $Global.Values.SECURITYCONTEXT "default") | nindent 2 }} */}}
+{{- if $Global.Values.USER }}
+  runAsUser: {{ $Global.Values.USER }}
+{{- end }}
+{{- end -}}

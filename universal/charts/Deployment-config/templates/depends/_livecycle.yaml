@@ -1,0 +1,19 @@
+{{- define "deployment.lifecycle" -}}
+{{- $Global := .Global }}
+{{- if $Global.Values.GRACEFULL_SHUTDOWN }}
+# --== Lib deploy livecycle / gracefull ==--
+{{- range $listIndex , $array := (list 
+  (index $Global.Values.GRACEFULL_SHUTDOWN (printf "default_%s" (upper .presetLabel))) 
+  (index $Global.Values.GRACEFULL_SHUTDOWN (upper .presetLabel))
+)}}
+{{- range $index, $value := . }}
+{{ $value.name }}:
+  preStop:
+    httpGet:
+      path: {{ $value.httpGet.path }}
+      port: {{ $value.httpGet.port }}
+      scheme: {{ $value.httpGet.scheme }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end -}}

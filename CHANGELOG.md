@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.0.0] - 16-Sep-2025
+### Changed
+- Universal update
+### Removed
+- universal_old
+- libraries
+
 ## [4.0.0] - 04-Jun-2025
 ### Added
 - depends

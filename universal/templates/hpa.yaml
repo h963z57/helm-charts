@@ -1,16 +1,23 @@
 {{- define "resources.hpa" -}}
 {{- if $.Values.HPA }}
+{{- $splitNamespace := splitList "-" $.Release.Namespace }} 
+{{- $filteredNamespace :=  without $splitNamespace "prod" "regress" "ift" "ift1" "ift2" "dev" "lt" "lt1" "lt2" "psi" "prom" "ns" }} 
+{{- $editedNamespace := join "-" $filteredNamespace | lower  }}
+{{- $checksLead := dict }}{{- range $container := $.Values.CONTAINERS }}{{- if $container.lead }}{{ $_ := set $checksLead "lead" $container.presetLabel }}{{- end }}{{- end }}
 ---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ $.Values.PROJECT_NAME }}-hpa
+  name: {{ index $checksLead "lead" }}-{{ $.Values.NAME }}-hpa
   namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/part-of  : {{ $.Release.Namespace }}
+    app.kubernetes.io/component: app
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: {{ .Values.PROJECT_NAME }}-deploy
+    name: {{ index $checksLead "lead" }}-{{ $.Values.NAME }}-{{ $editedNamespace }}-deploy
   minReplicas: {{ $.Values.HPA.MINREPL }}
   maxReplicas: {{ $.Values.HPA.MAXREPL }}
   metrics:

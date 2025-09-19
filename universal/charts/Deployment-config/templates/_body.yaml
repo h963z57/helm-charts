@@ -1,0 +1,34 @@
+{{- define "deployment.body" -}}
+{{- $splitNamespace := splitList "-" $.Release.Namespace }} 
+{{- $filteredNamespace :=  without $splitNamespace "prod" "regress" "ift" "ift1" "ift2" "dev" "lt" "lt1" "lt2" "psi" "prom" "ns" }} 
+{{- $editedNamespace := join "-" $filteredNamespace | lower  }}
+{{- $checksLead := dict }}{{- range $container := $.Values.CONTAINERS }}{{- if $container.lead }}{{ $_ := set $checksLead "lead" $container.presetLabel }}{{- end }}{{- end }}
+{{- range $index, $value := $.Values.CONTAINERS }}
+  {{- if not (has $.Values.ENVIRONMENT $value.excludeStands) }}
+# --== Create {{ $value.presetLabel }} pod ==--
+{{- /* ======================== Конфигурация образа =========================== */}}
+- name: {{ index $checksLead "lead" }}-{{ $.Values.NAME }}-{{ $editedNamespace }}
+  image: {{ index $.Values.IMAGE_PATHS $.Values.ENVIRONMENT }}/{{ index $.Values.IMAGES (upper $value.presetLabel) }}
+  imagePullPolicy: Always
+{{- /* ===================== ARGS $ COMMANDS  ============================= */}}
+  {{- include "deployment.commands" (dict "Global" $ "presetLabel" $value.presetLabel ) | nindent 2 }}
+  {{- include "deployment.args"     (dict "Global" $ "presetLabel" $value.presetLabel ) | nindent 2 }}
+{{- /* ====================== ENVIRONMENTS ================================ */}}
+  {{- include "deployment.environments" (dict "Global" $ "presetLabel" $value.presetLabel )    | nindent 2 }}
+{{- /* ======================= HEALTHCHECK ================================ */}}
+  {{- include "deployment.probes"    (dict "Global" $ "presetLabel" $value.presetLabel )       | nindent 2 }}
+  {{- include "deployment.lifecycle" (dict "Global" $ "presetLabel" $value.presetLabel )       | nindent 2 }}
+{{- /* ===================== SECURITY CONTEXT ============================= */}}
+  {{- include "deployment.securityContext" (dict "Global" $ "presetLabel" $value.presetLabel ) | nindent 2 }}  
+{{- /* ========================== PORTS =================================== */}}        
+  {{- include "deployment.ports" (dict "Global" $ "presetLabel" $value.presetLabel )           | nindent 2 }}  
+{{- /* ========================= HARDCODE ================================= */}}
+  terminationMessagePath: /dev/termination-log
+  terminationMessagePolicy: File
+{{- /* ======================== RESOURCES ================================= */}}
+  {{- include "deployment.resources" (dict "Global" $ "presetLabel" $value.presetLabel ) | nindent 2 }}
+{{- /* ======================= VOLUMEMOUNTS =============================== */}}
+  {{- include "deployment.volumeMounts" (dict "Global" $ "presetLabel" $value.presetLabel ) | nindent 2 }}
+  {{- end }}
+{{- end }}
+{{- end -}}

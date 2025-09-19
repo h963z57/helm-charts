@@ -1,9 +1,0 @@
-{{- define "resources.command" -}}
-{{- if .Values.COMMAND }}
-# ========= COMMAND ============
-command:
-  {{- range .Values.COMMAND }}
-  - {{ . }}
-  {{- end }}
-{{- end }}
-{{- end -}}
