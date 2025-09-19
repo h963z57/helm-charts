@@ -10,6 +10,10 @@ kind: HorizontalPodAutoscaler
 metadata:
   name: {{ index $checksLead "lead" }}-{{ $.Values.NAME }}-hpa
   namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name     : {{ index $checksLead "lead" }}-{{ $.Values.NAME }}
+    app.kubernetes.io/part-of  : {{ index $checksLead "lead" }}-{{ $.Values.NAME }}-{{ $editedNamespace }}
+    app.kubernetes.io/component: app
 spec:
   scaleTargetRef:
     apiVersion: apps/v1

@@ -1,5 +1,8 @@
 {{- define "configMaps.DCM" -}}
 {{- $Global := .Global }}
+{{- $splitNamespace := splitList "-" $Global.Release.Namespace   }} 
+{{- $filteredNamespace :=  without $splitNamespace "prod" "regress" "ift" "ift1" "ift2" "dev" "lt" "lt1" "lt2" "psi" "prom" "ns" }} 
+{{- $editedNamespace := join "-" $filteredNamespace | lower  }}
 {{- $checksLead := dict }}{{- range $container := $Global.Values.CONTAINERS }}{{- if $container.lead }}{{ $_ := set $checksLead "lead" $container.presetLabel }}{{- end }}{{- end }}
 {{- if or 
   (index $Global.Values.DCM (printf "default_%s" (upper .presetLabel))) 
@@ -17,6 +20,10 @@ apiVersion: v1
 metadata:
   name: {{ index $checksLead "lead" }}-{{ $Global.Values.NAME }}-{{ $cms.configMapName }}
   namespace: {{ $Global.Release.Namespace }}
+  labels:
+    app.kubernetes.io/name     : {{ index $checksLead "lead" }}-{{ $.Values.NAME }}
+    app.kubernetes.io/part-of  : {{ index $checksLead "lead" }}-{{ $.Values.NAME }}-{{ $editedNamespace }}
+    app.kubernetes.io/component: app
 data:
   {{ $cms.subPath }}: |-
       {{- $file_content := dict }}

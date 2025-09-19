@@ -6,6 +6,10 @@ apiVersion: scheduling.k8s.io/v1
 kind: PriorityClass
 metadata:
   name: {{ index $checksLead "lead" }}-{{ $.Values.NAME }}-pc
+  labels:
+    app.kubernetes.io/name     : {{ index $checksLead "lead" }}-{{ $.Values.NAME }}
+    app.kubernetes.io/part-of  : {{ index $checksLead "lead" }}-{{ $.Values.NAME }}-{{ $editedNamespace }}
+    app.kubernetes.io/component: app
 value: {{ $.Values.PRIORITY.VALUE }}
 globalDefault: false
 ---

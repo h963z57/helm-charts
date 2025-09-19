@@ -6,6 +6,10 @@ apiVersion: v1
 metadata:
   name: {{ ( index (index $.Values.CONTAINERS 0) "presetLabel" ) }}-{{ $.Values.NAME }}-svc
   namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name     : {{ index $checksLead "lead" }}-{{ $.Values.NAME }}
+    app.kubernetes.io/part-of  : {{ index $checksLead "lead" }}-{{ $.Values.NAME }}-{{ $editedNamespace }}
+    app.kubernetes.io/component: app
 spec:
   ipFamilyPolicy: PreferDualStack
   ipFamilies:
