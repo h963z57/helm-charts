@@ -21,8 +21,7 @@ metadata:
   name: {{ index $checksLead "lead" }}-{{ $Global.Values.NAME }}-{{ $cms.configMapName }}
   namespace: {{ $Global.Release.Namespace }}
   labels:
-    app.kubernetes.io/name     : {{ index $checksLead "lead" }}-{{ $.Values.NAME }}
-    app.kubernetes.io/part-of  : {{ index $checksLead "lead" }}-{{ $.Values.NAME }}-{{ $editedNamespace }}
+    app.kubernetes.io/part-of  : {{ $Global.Release.Namespace }}
     app.kubernetes.io/component: app
 data:
   {{ $cms.subPath }}: |-

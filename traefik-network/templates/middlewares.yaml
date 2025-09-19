@@ -8,6 +8,9 @@ metadata:
   namespace: {{ $ruleNamespace }}
 {{- if eq $middleware.name "https-redirect"}}
   name: {{ $value.name }}-https-redirect-mw
+  labels:
+    app.kubernetes.io/part-of  : {{ $ruleNamespace }}
+    app.kubernetes.io/component: network
 spec:
   redirectScheme:
     scheme: https

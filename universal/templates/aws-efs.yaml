@@ -26,8 +26,7 @@ kind: StorageClass
 metadata:
   name: {{ .name }}-sc
   labels:
-    app.kubernetes.io/name     : {{ index $checksLead "lead" }}-{{ $.Values.NAME }}
-    app.kubernetes.io/part-of  : {{ index $checksLead "lead" }}-{{ $.Values.NAME }}-{{ $editedNamespace }}
+    app.kubernetes.io/part-of  : {{ $.Release.Namespace }}
     app.kubernetes.io/component: app
 provisioner: efs.csi.aws.com
 ---
@@ -37,8 +36,7 @@ metadata:
   name: {{ index $checksLead "lead" }}-{{ $.Values.NAME }}-{{ .name }}-pv
   namespace: {{ $.Release.Namespace }}
   labels:
-    app.kubernetes.io/name     : {{ index $checksLead "lead" }}-{{ $.Values.NAME }}
-    app.kubernetes.io/part-of  : {{ index $checksLead "lead" }}-{{ $.Values.NAME }}-{{ $editedNamespace }}
+    app.kubernetes.io/part-of  : {{ $.Release.Namespace }}
     app.kubernetes.io/component: app
 spec:
   capacity:
@@ -58,8 +56,7 @@ metadata:
   name: {{ index $checksLead "lead" }}-{{ $.Values.NAME }}-{{ .name }}-pvc
   namespace: {{ $.Release.Namespace }}
   labels:
-    app.kubernetes.io/name     : {{ index $checksLead "lead" }}-{{ $.Values.NAME }}
-    app.kubernetes.io/part-of  : {{ index $checksLead "lead" }}-{{ $.Values.NAME }}-{{ $editedNamespace }}
+    app.kubernetes.io/part-of  : {{ $.Release.Namespace }}
     app.kubernetes.io/component: app
 spec:
   storageClassName: {{ .name }}-sc
