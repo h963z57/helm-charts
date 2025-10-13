@@ -1,5 +1,9 @@
 # Changelog
 
+## [5.0.1] - 13-Oct-2025
+### Changed
+- fix random postion of volumes
+
 ## [5.0.0] - 16-Sep-2025
 ### Changed
 - Universal update
