@@ -52,8 +52,10 @@ spec:
         )}}
         {{- range $containerVolume := $containerVolumes }}
           {{- if not (hasKey $containersVolumes $containerVolume.name) }}
-            {{- $_ := set $containersVolumes $containerVolume.name $containerVolume }}
+            {{- if (or (not $.Values.DCM_SELECTOR) (has $containerVolume.configMapName $.Values.DCM_SELECTOR)) }}
+              {{- $_ := set $containersVolumes $containerVolume.name $containerVolume }}
+            {{- end }}
           {{- end }}
         {{- end }}
       {{- end }}
-      {{- include "deployment.volumes" (dict "Global" $ "volumes" (values $containersVolumes) "name" $.Values.NAME "prefix" $.Values.VOLUME_MOUNTS.PREFIX) | nindent 6 }}
+      {{- include "deployment.volumes" (dict "Global" $ "volumes" $containersVolumes "name" $.Values.NAME "prefix" $.Values.VOLUME_MOUNTS.PREFIX) | nindent 6 }}
