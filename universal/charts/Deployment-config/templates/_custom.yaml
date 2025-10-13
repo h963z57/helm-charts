@@ -7,13 +7,14 @@
 {{- if or 
   (index $Global.Values.DCM (printf "default_%s" (upper .presetLabel))) 
   (index $Global.Values.DCM (upper .presetLabel)) 
-}}
+-}}
 # --== Lib deploy Dynamic ConfigMap ==--
   {{- range $listIndex , $array := (list 
     (index $Global.Values.DCM (printf "default_%s" (upper .presetLabel))) 
     (index $Global.Values.DCM (upper .presetLabel))
-  )}}
+  ) -}}
   {{- range $owner_cm, $cms := . }}
+    {{- if (or (not $Global.Values.DCM_SELECTOR) (has $cms.configMapName $Global.Values.DCM_SELECTOR)) }}
 ---
 kind: ConfigMap
 apiVersion: v1
@@ -36,6 +37,7 @@ data:
         {{- end }}
       {{- end }}
       {{- tpl (index $file_content "custom") $Global | nindent 4 }}
+    {{- end }}
   {{- end }}
   {{- end }}
 {{- end }}

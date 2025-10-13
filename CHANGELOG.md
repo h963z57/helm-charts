@@ -1,6 +1,8 @@
 # Changelog
 
-## [5.0.1] - 13-Oct-2025
+## [5.1.0] - 13-Oct-2025
+### Added
+- DCM_SELECTOR
 ### Changed
 - fix random postion of volumes
 

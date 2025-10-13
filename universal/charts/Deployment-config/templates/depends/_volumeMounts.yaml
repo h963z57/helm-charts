@@ -1,21 +1,8 @@
 {{- define "deployment.volumeMounts" -}}
 {{- $Global := .Global }}
-{{- if gt (len (concat 
-  (default (list) (index $Global.Values.VOLUME_MOUNTS (printf "default_%s" (upper .presetLabel)))) 
-  (default (list) (index $Global.Values.VOLUME_MOUNTS (upper .presetLabel)))
-
-  (default (list) (index $Global.Values.DCM (printf "default_%s" (upper .presetLabel)))) 
-  (default (list) (index $Global.Values.DCM (upper .presetLabel)))
-)) 0 }}
 # --== Lib deploy volumeMounts ==--
 volumeMounts:
-{{- range $index, $value := (concat 
-  (default (list) (index $Global.Values.VOLUME_MOUNTS (printf "default_%s" (upper .presetLabel)))) 
-  (default (list) (index $Global.Values.VOLUME_MOUNTS (upper .presetLabel)))
-
-  (default (list) (index $Global.Values.DCM (printf "default_%s" (upper .presetLabel)))) 
-  (default (list) (index $Global.Values.DCM (upper .presetLabel)))
-)}}
+{{- range $index, $value := .volumeMounts }}
 {{- if $value.hostPath}}
 # == VolumeMount {{ .name }} hostPath ==
 - name: {{ $value.name }}-volume
@@ -66,7 +53,6 @@ volumeMounts:
   {{- if $value.readOnly }}
   readOnly: {{ $value.readOnly }}
   {{- end }}
-{{- end }}
 {{- end }}
 {{- end }}
 {{- end -}}
