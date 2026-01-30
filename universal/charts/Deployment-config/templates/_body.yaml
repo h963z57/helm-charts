@@ -2,7 +2,7 @@
 {{- $splitNamespace := splitList "-" $.Release.Namespace }} 
 {{- $filteredNamespace :=  without $splitNamespace "prod" "regress" "ift" "ift1" "ift2" "dev" "lt" "lt1" "lt2" "psi" "prom" "ns" }} 
 {{- $editedNamespace := join "-" $filteredNamespace | lower  }}
-{{- $checksLead := dict }}{{- range $container := $.Values.CONTAINERS }}{{- if $container.lead }}{{ $_ := set $checksLead "lead" $container.presetLabel }}{{- end }}{{- end }}
+{{- $checksLead := dict }}{{- range $value := $.Values.CONTAINERS }}{{- if $value.lead }}{{ $_ := set $checksLead "lead" $value.presetLabel }}{{- end }}{{- end }}
 {{- range $index, $value := $.Values.CONTAINERS }}
   {{- if not (has $.Values.ENVIRONMENT $value.excludeStands) }}
 # --== Create {{ $value.presetLabel }} pod ==--
@@ -29,20 +29,18 @@
   {{- include "deployment.resources" (dict "Global" $ "presetLabel" $value.presetLabel ) | nindent 2 }}
 {{- /* ======================= VOLUMEMOUNTS =============================== */}}
   {{- $containersVolumes := dict }}
-  {{- range $container := $.Values.CONTAINERS }}
     {{- $containerVolumes := (concat
-      (default (list) (index $.Values.VOLUME_MOUNTS (printf "default_%s" (upper $container.presetLabel)))) 
-      (default (list) (index $.Values.VOLUME_MOUNTS (upper $container.presetLabel)))
+      (default (list) (index $.Values.VOLUME_MOUNTS (printf "default_%s" (upper $value.presetLabel)))) 
+      (default (list) (index $.Values.VOLUME_MOUNTS (upper $value.presetLabel)))
 
-      (default (list) (index $.Values.DCM (printf "default_%s" (upper $container.presetLabel)))) 
-      (default (list) (index $.Values.DCM (upper $container.presetLabel)))
+      (default (list) (index $.Values.DCM (printf "default_%s" (upper $value.presetLabel)))) 
+      (default (list) (index $.Values.DCM (upper $value.presetLabel)))
     )}}
     {{- range $containerVolume := $containerVolumes }}
       {{- if (or (not $.Values.DCM_SELECTOR) (has $containerVolume.configMapName $.Values.DCM_SELECTOR)) }}
         {{- $_ := set $containersVolumes $containerVolume.name $containerVolume }}
       {{- end }}
     {{- end }}
-  {{- end }}
     {{- if gt (len $containersVolumes ) 0 }}
       {{- include "deployment.volumeMounts" (dict "Global" $ "volumeMounts" $containersVolumes "presetLabel" $value.presetLabel ) | nindent 2 }}
     {{- end }}

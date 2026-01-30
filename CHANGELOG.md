@@ -1,5 +1,9 @@
 # Changelog
 
+## [5.1.1] - 15-Oct-2025
+### Changed
+- minor fix
+
 ## [5.1.0] - 13-Oct-2025
 ### Added
 - DCM_SELECTOR
