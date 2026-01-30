@@ -1,5 +1,9 @@
 # Changelog
 
+## [5.2.0] - 30-Jan-2026
+### Changed
+- fix create services for sidecars
+
 ## [5.1.1] - 15-Oct-2025
 ### Changed
 - minor fix

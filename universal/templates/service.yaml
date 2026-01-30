@@ -1,11 +1,27 @@
+{{- $checksLead := dict }}
+  {{- range $container := $.Values.CONTAINERS }}
+    {{- if $container.lead }}
+      {{- $_ := set $checksLead "lead" $container.presetLabel }}
+      {{- if (has $.Values.ENVIRONMENT $container.exceptStands) }}
+        {{ $_ := set $checksLead "exclude" "true" }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
 {{- $splitNamespace := splitList "-" $.Release.Namespace }} 
 {{- $filteredNamespace :=  without $splitNamespace "prod" "regress" "ift" "ift1" "ift2" "dev" "lt" "lt1" "lt2" "psi" "prom" "ns" }} 
 {{- $editedNamespace := join "-" $filteredNamespace | lower  }}
+{{- range $index, $value := $.Values.CONTAINERS }}
+  {{- if not (has $.Values.ENVIRONMENT $value.exceptStands) }}
+    {{- if gt (len (concat 
+      (default (list) (index $.Values.PORTS (printf "default_%s" (upper .presetLabel)))) 
+      (default (list) (index $.Values.PORTS (upper .presetLabel)))
+    )) 0 }}
+---
 kind: Service
 apiVersion: v1
 metadata:
-  name: {{ ( index (index $.Values.CONTAINERS 0) "presetLabel" ) }}-{{ $.Values.NAME }}-svc
-  namespace: {{ .Release.Namespace }}
+  name: {{ $value.presetLabel }}-{{ $.Values.NAME }}-svc
+  namespace: {{ $.Release.Namespace }}
   labels:
     app.kubernetes.io/part-of  : {{ $.Release.Namespace }}
     app.kubernetes.io/component: app
@@ -15,7 +31,7 @@ spec:
   - IPv6
   - IPv4
   selector:
-    app: {{ ( index (index $.Values.CONTAINERS 0) "presetLabel" ) }}-{{ $.Values.NAME }}-{{ $editedNamespace }}-pod
+    app: {{ index $checksLead "lead" }}-{{ $.Values.NAME }}-{{ $editedNamespace }}-pod
   {{- if $.Values.DIRECT_CONNECTION }}
   type: LoadBalancer
   externalTrafficPolicy: Local
@@ -26,8 +42,8 @@ spec:
   {{- end }}
   ports:
 {{- range $listIndex , $array := (list 
-  (index $.Values.PORTS (printf "default_%s" (upper ( index (index $.Values.CONTAINERS 0) "presetLabel" )))) 
-  (index $.Values.PORTS (upper ( index (index $.Values.CONTAINERS 0) "presetLabel" )))) 
+    (index $.Values.PORTS (printf "default_%s" (upper $value.presetLabel)))
+    (index $.Values.PORTS (upper $value.presetLabel))) 
 }}
   {{- range $index, $value := . }}
   - name: {{ $value.protocol | lower }}-{{ $value.name }}
@@ -37,4 +53,7 @@ spec:
   {{- end }}
   {{- end }}
   selector:
-    app: {{ ( index (index $.Values.CONTAINERS 0) "presetLabel" ) }}-{{ $.Values.NAME }}-{{ $editedNamespace }}-pod
+    app: {{ index $checksLead "lead" }}-{{ $.Values.NAME }}-{{ $editedNamespace }}-pod
+{{- end }}
+{{- end }}
+{{- end }}
