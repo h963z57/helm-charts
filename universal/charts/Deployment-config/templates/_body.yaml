@@ -7,7 +7,7 @@
   {{- if not (has $.Values.ENVIRONMENT $value.excludeStands) }}
 # --== Create {{ $value.presetLabel }} pod ==--
 {{- /* ======================== Конфигурация образа =========================== */}}
-- name: {{ index $checksLead "lead" }}-{{ $.Values.NAME }}-{{ $editedNamespace }}
+- name: {{ $value.presetLabel | lower }}-{{ $.Values.NAME }}-{{ $editedNamespace }}
   image: {{ index $.Values.IMAGE_PATHS $.Values.ENVIRONMENT }}/{{ index $.Values.IMAGES (upper $value.presetLabel) }}
   imagePullPolicy: Always
 {{- /* ===================== ARGS $ COMMANDS  ============================= */}}
