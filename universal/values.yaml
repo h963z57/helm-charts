@@ -115,6 +115,11 @@ DCM:
                   labels:
                     instance: "{{ $target.labels }}"
                 {{- end }}
+              {{- if and $value.login $value.pass }}
+              basic_auth:
+                username: {{ $value.login }}
+                password: {{ $value.pass }}
+              {{- end }}
             {{- end }}
 
 # GRACEFULL_SHUTDOWN:
