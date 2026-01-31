@@ -1,5 +1,9 @@
 # Changelog
 
+## [5.2.1] - 31-Jan-2026
+### Changed
+- prometheus config fix
+
 ## [5.2.0] - 30-Jan-2026
 ### Changed
 - fix create services for sidecars
