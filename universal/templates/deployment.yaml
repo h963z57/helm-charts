@@ -17,6 +17,10 @@ metadata:
     app.kubernetes.io/part-of  : {{ $.Release.Namespace }}
     app.kubernetes.io/component: app
 spec:
+  {{- if $.Values.RECREATE }}
+  strategy:
+    type: Recreate
+  {{- end }}
   replicas: {{ tpl $.Values.REPLICAS $ }}
   selector:
     matchLabels:
