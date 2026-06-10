@@ -1,5 +1,9 @@
 # Changelog
 
+## [5.3.2] - 10-Jun-2026
+### Changed
+- prometheus config
+
 ## [5.3.1] - 15-Mar-2026
 ### Added
 - optional parameters "recreate" (delete first)
