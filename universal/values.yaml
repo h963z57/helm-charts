@@ -109,11 +109,6 @@ DCM:
             {{- range $index, $value := $.Values.CONFIGMAPS.PROMETHEUS.HOSTS }}
             - job_name: '{{ $value.jobName }}'
               scrape_interval: 5s
-              {{- if $value.https }}
-              scheme: https
-              tls_config:
-                insecure_skip_verify: true
-              {{- end }}
               static_configs:
                 {{- range $targetIndex, $target := $value.targets }}
                 - targets: ['{{ $target.url }}']
