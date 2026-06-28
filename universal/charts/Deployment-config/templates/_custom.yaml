@@ -5,6 +5,7 @@
   (index $Global.Values.DCM (printf "default_%s" (upper .presetLabel))) 
   (index $Global.Values.DCM (upper .presetLabel)) 
 -}}
+{{- $dcmArray := dict }}
 # --== Lib deploy Dynamic ConfigMap ==--
   {{- range (concat 
     (default (list) (index $Global.Values.DCM (printf "default_%s" (upper .presetLabel))))

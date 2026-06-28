@@ -1,5 +1,5 @@
 {{- $splitNamespace := splitList "-" $.Release.Namespace   }} 
-{{- $filteredNamespace :=  without $splitNamespace "prod" "regress" "ift" "ift1" "ift2" "dev" "lt" "lt1" "lt2" "psi" "prom" "ns" }} 
+{{- $filteredNamespace :=  without $splitNamespace "prod" "ns" }} 
 {{- $editedNamespace := join "-" $filteredNamespace | lower  }}
 {{- $checksLead := dict }}{{- range $container := $.Values.CONTAINERS }}{{- if $container.lead }}{{ $_ := set $checksLead "lead" $container.presetLabel }}{{- end }}{{- end }}
 ---
@@ -34,6 +34,8 @@ spec:
       {{- include "resources.priority" . | nindent 6 }}
     {{- if eq ( index $checksLead "lead" ) "traefik" }}
       serviceAccountName: traefik-ingress-controller
+    {{- else if $.Values.SERVERTOKEN }}
+      automountServiceAccountToken: true
     {{- else }}
       automountServiceAccountToken: false
     {{- end }}
