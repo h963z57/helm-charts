@@ -1,8 +1,5 @@
 {{- define "deployment.resources" -}}
 {{- $Global := .Global }}
-{{- if or 
-  ((index $Global.Values.RESOURCES (upper .presetLabel)))
-}}
 # --== Lib deploy resources ==--
 {{- $splitResource := splitList "/" (tpl (print "{{ $.Values.RESOURCE_" (.Global.Values.NAME | upper | replace "-" "_") "_" (.presetLabel | upper | replace "-" "_") " }}") $Global) }} 
 resources:
@@ -12,5 +9,4 @@ resources:
   requests:
     cpu:    {{ (index $splitResource 2) }}
     memory: {{ (index $splitResource 3) }}
-{{- end }}
 {{- end -}}
