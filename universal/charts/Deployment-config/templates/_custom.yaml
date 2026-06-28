@@ -1,33 +1,31 @@
 {{- define "configMaps.DCM" -}}
 {{- $Global := .Global }}
-{{- $splitNamespace := splitList "-" $Global.Release.Namespace   }} 
-{{- $filteredNamespace :=  without $splitNamespace "prod" "regress" "ift" "ift1" "ift2" "dev" "lt" "lt1" "lt2" "psi" "prom" "ns" }} 
-{{- $editedNamespace := join "-" $filteredNamespace | lower  }}
 {{- $checksLead := dict }}{{- range $container := $Global.Values.CONTAINERS }}{{- if $container.lead }}{{ $_ := set $checksLead "lead" $container.presetLabel }}{{- end }}{{- end }}
 {{- if or 
   (index $Global.Values.DCM (printf "default_%s" (upper .presetLabel))) 
   (index $Global.Values.DCM (upper .presetLabel)) 
 -}}
 # --== Lib deploy Dynamic ConfigMap ==--
-  {{- range $listIndex , $array := (list 
-    (index $Global.Values.DCM (printf "default_%s" (upper .presetLabel))) 
-    (index $Global.Values.DCM (upper .presetLabel))
+  {{- range (concat 
+    (default (list) (index $Global.Values.DCM (printf "default_%s" (upper .presetLabel))))
+    (default (list) (index $Global.Values.DCM (upper .presetLabel)))
   ) -}}
-  {{- range $owner_cm, $cms := . }}
-    {{- if (or (not $Global.Values.DCM_SELECTOR) (has $cms.configMapName $Global.Values.DCM_SELECTOR)) }}
+    {{ $_ := set $dcmArray .configMapName . }}
+  {{- end }}
+  {{- range $dcmArray }}
 ---
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: {{ index $checksLead "lead" }}-{{ $Global.Values.NAME }}-{{ $cms.configMapName }}
+  name: {{ index $checksLead "lead" }}-{{ $Global.Values.NAME }}-{{ .configMapName }}
   namespace: {{ $Global.Release.Namespace }}
   labels:
     app.kubernetes.io/part-of  : {{ $Global.Release.Namespace }}
     app.kubernetes.io/component: app
 data:
-  {{ $cms.subPath }}: |-
+  {{ .subPath }}: |-
       {{- $file_content := dict }}
-      {{- range $key, $val := $cms.content }}
+      {{- range $key, $val := .content }}
         {{- if eq $key 0 }}
           {{- $_ := set $file_content "custom" $val.data }}
         {{- else }}
@@ -38,8 +36,6 @@ data:
       {{- end }}
       {{- tpl (index $file_content "custom") $Global | nindent 4 }}
     {{- end }}
-  {{- end }}
-  {{- end }}
 {{- end }}
 {{- end -}}
       

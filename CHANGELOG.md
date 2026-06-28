@@ -1,5 +1,10 @@
 # Changelog
 
+## [5.4.0] - 28-Jun-2026
+### Changed
+- DCM change logic
+- rework resource logic 
+
 ## [5.3.1] - 15-Mar-2026
 ### Added
 - optional parameters "recreate" (delete first)

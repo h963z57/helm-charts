@@ -4,20 +4,13 @@
   ((index $Global.Values.RESOURCES (upper .presetLabel)))
 }}
 # --== Lib deploy resources ==--
+{{- $splitResource := splitList "/" (tpl (print "{{ $.Values.RESOURCE_" (.Global.Values.NAME | upper | replace "-" "_") "_" (.presetLabel | upper | replace "-" "_") " }}") $Global) }} 
 resources:
-  {{- if (index $Global.Values.RESOURCES (upper .presetLabel)).CPU_LIMIT  }}
-  {{- if (index $Global.Values.RESOURCES (upper .presetLabel)).RAM_LIMIT  }}
   limits:
-    cpu: {{ tpl (index (index $Global.Values.RESOURCES (upper .presetLabel)) "CPU_LIMIT") $Global | quote }}
-    memory: {{ tpl (index (index $Global.Values.RESOURCES (upper .presetLabel)) "RAM_LIMIT") $Global | quote }}
-  {{- end }}
-  {{- end }}
-  {{- if (index $Global.Values.RESOURCES (upper .presetLabel)).CPU_REQUESTS }}
-  {{- if (index $Global.Values.RESOURCES (upper .presetLabel)).RAM_REQUESTS }}
+    cpu:    {{ (index $splitResource 0) }}
+    memory: {{ (index $splitResource 1) }}
   requests:
-    cpu: {{ tpl (index (index $Global.Values.RESOURCES (upper .presetLabel)) "CPU_REQUESTS") $Global | quote }}
-    memory: {{ tpl (index (index $Global.Values.RESOURCES (upper .presetLabel)) "RAM_REQUESTS") $Global | quote }}
-  {{- end }}
-  {{- end }}
+    cpu:    {{ (index $splitResource 2) }}
+    memory: {{ (index $splitResource 3) }}
 {{- end }}
 {{- end -}}

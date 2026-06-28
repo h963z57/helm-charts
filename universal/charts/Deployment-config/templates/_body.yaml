@@ -37,9 +37,7 @@
       (default (list) (index $.Values.DCM (upper $value.presetLabel)))
     )}}
     {{- range $containerVolume := $containerVolumes }}
-      {{- if (or (not $.Values.DCM_SELECTOR) (has $containerVolume.configMapName $.Values.DCM_SELECTOR)) }}
-        {{- $_ := set $containersVolumes $containerVolume.name $containerVolume }}
-      {{- end }}
+      {{- $_ := set $containersVolumes $containerVolume.name $containerVolume }}
     {{- end }}
     {{- if gt (len $containersVolumes ) 0 }}
       {{- include "deployment.volumeMounts" (dict "Global" $ "volumeMounts" $containersVolumes "presetLabel" $value.presetLabel ) | nindent 2 }}
