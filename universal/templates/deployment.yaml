@@ -39,6 +39,9 @@ spec:
     {{- else }}
       automountServiceAccountToken: false
     {{- end }}
+    {{- if $.Values.SERVICEACCOUNT }}
+      serviceAccountName: {{ $.Values.SERVICEACCOUNT }}
+    {{- end }}
 # ========================= Pod configuration ============================
       containers:
       {{- include "deployment.body" . | nindent 6 }}

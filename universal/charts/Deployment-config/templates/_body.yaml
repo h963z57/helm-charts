@@ -8,7 +8,7 @@
 # --== Create {{ $value.presetLabel }} pod ==--
 {{- /* ======================== Конфигурация образа =========================== */}}
 - name: {{ $value.presetLabel | lower }}-{{ $.Values.NAME }}-{{ $editedNamespace }}
-  image: {{ index $.Values.IMAGE_PATHS $.Values.ENVIRONMENT }}/{{ index $.Values.IMAGES (upper $value.presetLabel) }}
+  image: {{ index $.Values.IMAGES (upper $value.presetLabel) }}
   imagePullPolicy: Always
 {{- /* ===================== ARGS $ COMMANDS  ============================= */}}
   {{- include "deployment.commands" (dict "Global" $ "presetLabel" $value.presetLabel ) | nindent 2 }}
