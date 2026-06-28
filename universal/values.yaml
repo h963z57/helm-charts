@@ -35,8 +35,6 @@ VOLUME_MOUNTS:
   #   - {name: example, mountPath: /destination/path, emptyDir: regular                                                        }
     # - {name: example, mountPath: /destination/path, emptyDir: memory                                                         }
 
-
-
 PROBES:
   default_DJANGO: 
     readinessProbe: '{failureThreshold: 3, initialDelaySeconds: 60, periodSeconds: 30, successThreshold: 1, tcpSocket: {port: 8000}, timeoutSeconds: 10}'
@@ -50,6 +48,9 @@ PROBES:
   default_PROMETHEUS:
     livenessProbe : '{httpGet: {path: /-/healthy, port: 9090}, initialDelaySeconds: 30, timeoutSeconds: 5, periodSeconds: 10, failureThreshold: 3}'
     readinessProbe: '{httpGet: {path: /-/ready,   port: 9090}, initialDelaySeconds: 10, timeoutSeconds: 5, periodSeconds: 10, failureThreshold: 3}'
+  default_STATE-METRICS: 
+    readinessProbe: '{httpGet: {path: /healthz, port: 8080}, initialDelaySeconds: 5, timeoutSeconds: 5}'
+    livenessProbe : '{httpGet: {path: /livez,   port: 8080}, initialDelaySeconds: 5, timeoutSeconds: 5}'
   default_REDIS:
     readinessProbe: '{failureThreshold: 3, initialDelaySeconds: 60, periodSeconds: 30, successThreshold: 1, tcpSocket: {port: 6379}, timeoutSeconds: 10}'
     livenessProbe : '{failureThreshold: 3, initialDelaySeconds: 60, periodSeconds: 30, successThreshold: 1, tcpSocket: {port: 6379}, timeoutSeconds: 10}'
@@ -69,6 +70,9 @@ PORTS:
     - {name: http,       port: 3000,  protocol: TCP}
   default_PROMETHEUS:
     - {name: prometheus, port: 9090,  protocol: TCP}
+  default_STATE-METRICS:
+    - {name: http-metrics, port: 8080,  protocol: TCP}
+    - {name: telemetry,    port: 8081,  protocol: TCP}
   default_REDIS:
     - {name: redis,      port: 6379,  protocol: TCP}
   default_KEYCLOAK:
@@ -116,6 +120,27 @@ DCM:
                 password: {{ $value.pass }}
               {{- end }}
             {{- end }}
+          # Default area
+          - job_name: 'kube-state'
+            scrape_interval: 5s
+            static_configs:
+              - targets: ['state-metrics-prometheus-svc:8080']
+                labels:
+                  instance: "kube-state"
+          - job_name: kubernetes-cadvisor
+            scheme: https
+            metrics_path: /api/v1/nodes/${1}/proxy/metrics/cadvisor
+            kubernetes_sd_configs:
+              - role: node
+            bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+            tls_config:
+              insecure_skip_verify: true
+            relabel_configs:
+              - source_labels: [__meta_kubernetes_node_name]
+                target_label: __metrics_path__
+                replacement: /api/v1/nodes/${1}/proxy/metrics/cadvisor
+              - target_label: __address__
+                replacement: kubernetes.default.svc
 
 # GRACEFULL_SHUTDOWN:
 #   EXAMPLE:
