@@ -1,5 +1,9 @@
 # Changelog
 
+## [5.4.1] - 30-Jul-2026
+### Added
+- targetPort 
+
 ## [5.4.0] - 28-Jun-2026
 ### Changed
 - DCM change logic
