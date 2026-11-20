@@ -1,5 +1,9 @@
 # Changelog
 
+## [5.4.2] - 20-Nov-2026
+### Added
+- optinal parameter aws_efs region
+
 ## [5.4.1] - 30-Jul-2026
 ### Added
 - targetPort 

@@ -39,6 +39,10 @@ metadata:
     app.kubernetes.io/part-of  : {{ $.Release.Namespace }}
     app.kubernetes.io/component: app
 spec:
+  {{- if .region }}
+  mountOptions:
+    - region={{ .region }}
+  {{- end }}
   capacity:
     storage: {{ .storage }}
   volumeMode: Filesystem
