@@ -1,6 +1,6 @@
 # Changelog
 
-## [6.0.1] - 24-Nov-2026
+## [6.0.3] - 24-Nov-2026
 ### Added
 - CI check
 
