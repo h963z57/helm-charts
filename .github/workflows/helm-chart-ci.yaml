@@ -1,0 +1,67 @@
+name: Helm chart CI
+
+on:
+  push:
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  check-examples:
+    if: ${{ !github.event.deleted }}
+    name: ${{ matrix.chart }} / ${{ matrix.example }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        chart: [universal, traefik-network]
+        example: [examples.minimal.values.yaml, examples.values.yaml]
+    env:
+      CHART: ${{ matrix.chart }}
+      EXAMPLE: ${{ matrix.example }}
+    steps:
+      - name: Check out the tagged revision
+        uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v5.1.0
+        with:
+          version: v3.19.0
+
+      - name: Render chart example
+        run: helm template example "./$CHART" --namespace example-ns -f "$CHART/$EXAMPLE" > /dev/null
+
+      - name: Lint chart example
+        if: ${{ !cancelled() }}
+        run: |
+          helm lint "./$CHART" --namespace example-ns -f "$CHART/$EXAMPLE" || {
+            status=$?
+            if [[ "$CHART" != universal ]]; then
+              exit "$status"
+            fi
+
+            # universal lint is advisory because Deployment-config is undeclared.
+            printf 'Advisory: helm lint exited with status %s for %s/%s.\n' "$status" "$CHART" "$EXAMPLE"
+          }
+
+      - name: Verify invalid route type is rejected
+        if: ${{ matrix.chart == 'traefik-network' && matrix.example == 'examples.minimal.values.yaml' }}
+        run: |
+          if output=$(helm template example "./$CHART" --namespace example-ns \
+            -f "$CHART/$EXAMPLE" --set 'INBOUND_CONNECTION[0].type=unsupported' 2>&1); then
+            echo "Expected Helm to reject the unsupported route type."
+            exit 1
+          fi
+
+          printf '%s\n' "$output"
+          grep -Fq "values don't meet the specifications of the schema(s)" <<< "$output"
+          grep -Fq "at '/INBOUND_CONNECTION/0/type': value must be one of" <<< "$output"
