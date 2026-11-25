@@ -13,6 +13,9 @@ env:
   (default (list) (index $Global.Values.ENVIRONMENTS (upper .presetLabel)))
 )}}
   {{- if eq .type "text" }}
+    {{- if not (hasKey $value "value") }}
+      {{- fail (printf "ENVIRONMENTS (%s).value must be set for text entries" $value.name) }}
+    {{- end }}
   - name: {{ $value.name }}
     value: "{{ tpl (toString $value.value) $Global }}"
   {{- else if eq .type "secret" }}

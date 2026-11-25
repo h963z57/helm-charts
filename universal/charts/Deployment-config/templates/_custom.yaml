@@ -14,6 +14,11 @@
     {{ $_ := set $dcmArray .configMapName . }}
   {{- end }}
   {{- range $dcmArray }}
+    {{- $input := printf "DCM.%s (%s)" $.presetLabel .configMapName }}
+    {{- $subPath := required (printf "%s.subPath must contain a ConfigMap data key" $input) .subPath }}
+    {{- if not .content }}
+      {{- fail (printf "%s.content[0].data must be a string" $input) }}
+    {{- end }}
 ---
 kind: ConfigMap
 apiVersion: v1
@@ -24,10 +29,13 @@ metadata:
     app.kubernetes.io/part-of  : {{ $Global.Release.Namespace }}
     app.kubernetes.io/component: app
 data:
-  {{ .subPath }}: |-
+  {{ $subPath }}: |-
       {{- $file_content := dict }}
       {{- range $key, $val := .content }}
         {{- if eq $key 0 }}
+          {{- if not (kindIs "string" $val.data) }}
+            {{- fail (printf "%s.content[0].data must be a string" $input) }}
+          {{- end }}
           {{- $_ := set $file_content "custom" $val.data }}
         {{- else }}
           {{- if $val.data }}{{- if eq (typeOf $val.data) "map[string]interface {}" }}{{- $_ := set $file_content "data" (ternary (index $val.data $Global.Values.ENVIRONMENT) "" (has $Global.Values.ENVIRONMENT (keys $val.data))) }}{{- else }}{{- $_ := set $file_content "data" $val.data}}{{- end }}{{- end }}

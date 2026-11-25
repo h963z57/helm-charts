@@ -2,6 +2,10 @@
 {{- $filteredNamespace :=  without $splitNamespace "prod" "ns" }} 
 {{- $editedNamespace := join "-" $filteredNamespace | lower  }}
 {{- $checksLead := dict }}{{- range $container := $.Values.CONTAINERS }}{{- if $container.lead }}{{ $_ := set $checksLead "lead" $container.presetLabel }}{{- end }}{{- end }}
+{{- $replicas := tpl $.Values.REPLICAS $ }}
+{{- if not (regexMatch "^[0-9]+$" $replicas) }}
+  {{- fail "REPLICAS must resolve to a non-negative integer" }}
+{{- end }}
 ---
 apiVersion: apps/v1
 {{- if $.Values.DAEMONSET }}
@@ -13,7 +17,7 @@ metadata:
   name: {{ index $checksLead "lead" }}-{{ $.Values.NAME }}-{{ $editedNamespace }}
   namespace: {{ .Release.Namespace }}
   labels:
-    replicas: "{{ tpl $.Values.REPLICAS $ }}"
+    replicas: "{{ $replicas }}"
     app.kubernetes.io/part-of  : {{ $.Release.Namespace }}
     app.kubernetes.io/component: app
 spec:
@@ -21,7 +25,7 @@ spec:
   strategy:
     type: Recreate
   {{- end }}
-  replicas: {{ tpl $.Values.REPLICAS $ }}
+  replicas: {{ $replicas }}
   selector:
     matchLabels:
       app: {{ index $checksLead "lead" }}-{{ $.Values.NAME }}-{{ $editedNamespace }}-pod

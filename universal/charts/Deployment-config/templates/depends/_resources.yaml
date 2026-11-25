@@ -1,7 +1,18 @@
 {{- define "deployment.resources" -}}
 {{- $Global := .Global }}
 # --== Lib deploy resources ==--
-{{- $splitResource := splitList "/" (tpl (print "{{ $.Values.RESOURCE_" (.Global.Values.NAME | upper | replace "-" "_") "_" (.presetLabel | upper | replace "-" "_") " }}") $Global) }} 
+{{- $key := printf "RESOURCE_%s_%s" ($Global.Values.NAME | upper | replace "-" "_") (.presetLabel | upper | replace "-" "_") }}
+{{- $expected := printf "%s must resolve to four slash-separated Kubernetes quantities (CPU limit/memory limit/CPU request/memory request)" $key }}
+{{- $raw := required $expected (index $Global.Values $key) }}
+{{- $splitResource := splitList "/" (tpl $raw $Global) }}
+{{- if ne (len $splitResource) 4 }}
+  {{- fail $expected }}
+{{- end }}
+{{- range $splitResource }}
+  {{- if not (regexMatch `^\+?([0-9]+(\.[0-9]*)?|\.[0-9]+)([numkMGTPE]|[KMGTPE]i|[eE][+-]?[0-9]+)?$` .) }}
+    {{- fail $expected }}
+  {{- end }}
+{{- end }}
 resources:
   limits:
     cpu:    {{ (index $splitResource 0) }}

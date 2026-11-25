@@ -1,0 +1,9 @@
+# Minimal HTTP route example.
+INBOUND_CONNECTION:
+  - name: example-http
+    type: http
+    domain: app.example.org
+    port: 8080
+    entryPoints: [websecure]
+    namespace: example-ns
+    service: app-example-svc
