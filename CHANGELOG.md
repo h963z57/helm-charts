@@ -1,5 +1,9 @@
 # Changelog
 
+## [6.0.1] - 24-Nov-2026
+### Added
+- CI check
+
 ## [6.0.0] - 24-Nov-2026
 ### Added
 - SDD
