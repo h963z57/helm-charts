@@ -1,5 +1,9 @@
 # Changelog
 
+## [6.0.0] - 24-Nov-2026
+### Added
+- SDD
+
 ## [5.4.2] - 20-Nov-2026
 ### Added
 - optinal parameter aws_efs region
