@@ -1,0 +1,228 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": true,
+  "properties": {
+    "INBOUND_CONNECTION": {
+      "items": {
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "type": {
+                  "const": "http",
+                  "required": []
+                }
+              },
+              "required": [
+                "type"
+              ]
+            },
+            "required": [],
+            "then": {
+              "required": [
+                "domain",
+                "port"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "type": {
+                  "const": "traefik",
+                  "required": []
+                }
+              },
+              "required": [
+                "type"
+              ]
+            },
+            "required": [],
+            "then": {
+              "required": [
+                "domain"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "type": {
+                  "const": "tcp",
+                  "required": []
+                }
+              },
+              "required": [
+                "type"
+              ]
+            },
+            "required": [],
+            "then": {
+              "required": [
+                "port"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "tls": {
+                  "const": "passthrough",
+                  "required": []
+                },
+                "type": {
+                  "const": "tcp",
+                  "required": []
+                }
+              },
+              "required": [
+                "type",
+                "tls"
+              ]
+            },
+            "required": [],
+            "then": {
+              "required": [
+                "domain"
+              ]
+            }
+          }
+        ],
+        "properties": {
+          "domain": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "entryPoints": {
+            "items": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "minItems": 1,
+            "type": "array"
+          },
+          "middlewaresPresents": {
+            "items": {
+              "allOf": [
+                {
+                  "if": {
+                    "properties": {
+                      "name": {
+                        "const": "keycloak-auth",
+                        "required": []
+                      }
+                    },
+                    "required": [
+                      "name"
+                    ]
+                  },
+                  "required": [],
+                  "then": {
+                    "required": [
+                      "address"
+                    ]
+                  }
+                },
+                {
+                  "if": {
+                    "properties": {
+                      "name": {
+                        "const": "basic-auth",
+                        "required": []
+                      }
+                    },
+                    "required": [
+                      "name"
+                    ]
+                  },
+                  "required": [],
+                  "then": {
+                    "required": [
+                      "secretName"
+                    ]
+                  }
+                }
+              ],
+              "properties": {
+                "address": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "name": {
+                  "enum": [
+                    "https-redirect",
+                    "nextcloud-1",
+                    "headers-cors-allow-all",
+                    "keycloak-auth",
+                    "basic-auth"
+                  ],
+                  "required": []
+                },
+                "secretName": {
+                  "minLength": 1,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "name": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "namespace": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "port": {
+            "maximum": 65535,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "proxyProtocol": {
+            "enum": [
+              1,
+              2
+            ],
+            "required": []
+          },
+          "service": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "tls": {
+            "enum": [
+              "notPresent",
+              "passthrough"
+            ],
+            "required": []
+          },
+          "type": {
+            "enum": [
+              "http",
+              "tcp",
+              "traefik"
+            ],
+            "required": []
+          }
+        },
+        "required": [
+          "name",
+          "type",
+          "entryPoints"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    }
+  },
+  "required": [
+    "INBOUND_CONNECTION"
+  ],
+  "title": "Traefik network chart values",
+  "type": "object"
+}

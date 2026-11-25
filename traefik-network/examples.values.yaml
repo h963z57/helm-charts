@@ -1,0 +1,158 @@
+# Extended example with HTTP, TCP, and TraefikService routes.
+# @schema.root
+# title: "Traefik network chart values"
+# additionalProperties: true
+# required:
+# - INBOUND_CONNECTION
+# @schema.root
+# @schema
+# type: "array"
+# items:
+#   type: object
+#   properties:
+#     name:
+#       type: string
+#       minLength: 1
+#     type:
+#       enum:
+#       - http
+#       - tcp
+#       - traefik
+#     domain:
+#       type: string
+#       minLength: 1
+#     port:
+#       type: integer
+#       minimum: 1
+#       maximum: 65535
+#     entryPoints:
+#       type: array
+#       items:
+#         type: string
+#         minLength: 1
+#       minItems: 1
+#     namespace:
+#       type: string
+#       minLength: 1
+#     service:
+#       type: string
+#       minLength: 1
+#     tls:
+#       enum:
+#       - notPresent
+#       - passthrough
+#     proxyProtocol:
+#       enum:
+#       - 1
+#       - 2
+#     middlewaresPresents:
+#       type: array
+#       items:
+#         type: object
+#         properties:
+#           name:
+#             enum:
+#             - https-redirect
+#             - nextcloud-1
+#             - headers-cors-allow-all
+#             - keycloak-auth
+#             - basic-auth
+#           address:
+#             type: string
+#             minLength: 1
+#           secretName:
+#             type: string
+#             minLength: 1
+#         required:
+#         - name
+#         allOf:
+#         - if:
+#             properties:
+#               name:
+#                 const: keycloak-auth
+#             required:
+#             - name
+#           then:
+#             required:
+#             - address
+#         - if:
+#             properties:
+#               name:
+#                 const: basic-auth
+#             required:
+#             - name
+#           then:
+#             required:
+#             - secretName
+#   required:
+#   - name
+#   - type
+#   - entryPoints
+#   allOf:
+#   - if:
+#       properties:
+#         type:
+#           const: http
+#       required:
+#       - type
+#     then:
+#       required:
+#       - domain
+#       - port
+#   - if:
+#       properties:
+#         type:
+#           const: traefik
+#       required:
+#       - type
+#     then:
+#       required:
+#       - domain
+#   - if:
+#       properties:
+#         type:
+#           const: tcp
+#       required:
+#       - type
+#     then:
+#       required:
+#       - port
+#   - if:
+#       properties:
+#         type:
+#           const: tcp
+#         tls:
+#           const: passthrough
+#       required:
+#       - type
+#       - tls
+#     then:
+#       required:
+#       - domain
+# @schema
+INBOUND_CONNECTION:
+  - name: example-http
+    type: http
+    domain: app.example.org
+    port: 8080
+    entryPoints: [websecure]
+    namespace: example-ns
+    service: app-example-svc
+    middlewaresPresents:
+      - {name: basic-auth, secretName: example-basic-auth}
+  - name: example-tcp
+    type: tcp
+    domain: tcp.example.org
+    port: 9443
+    entryPoints: [example-tcp]
+    namespace: example-ns
+    service: example-tcp-svc
+    tls: passthrough
+    proxyProtocol: 2
+  - name: example-internal
+    type: traefik
+    domain: dashboard.example.org
+    port: 8080
+    entryPoints: [websecure]
+    namespace: example-ns
+    service: api@internal

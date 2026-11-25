@@ -44,6 +44,11 @@ The chart SHALL stop rendering when a chart-consumed required value is missing o
 - **WHEN** a rendered container's computed `RESOURCE_*` key is missing or resolves to an invalid limit and request tuple
 - **THEN** Helm exits with an error that names the key and describes its four expected components
 
+#### Scenario: Reject whitespace in a resolved resource tuple
+
+- **WHEN** the resolved value of an active container's computed `RESOURCE_*` key contains whitespace, including before or after a slash
+- **THEN** Helm exits with an error that names the computed key and states the expected tuple format
+
 #### Scenario: Preserve valid zero and optional values
 
 - **WHEN** a supported replica value resolves to zero or a templated text field allows an empty result

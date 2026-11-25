@@ -1,0 +1,353 @@
+# Extended workload example. The EFS IDs and Secret reference are placeholders.
+# @schema.root
+# title: "Universal chart values"
+# additionalProperties: true
+# required:
+# - NAME
+# - CONTAINERS
+# - IMAGES
+# patternProperties:
+#   ^RESOURCE_[A-Z0-9_]+$:
+#     type: string
+#     description: Four slash-separated resource quantities after template evaluation.
+# @schema.root
+# @schema
+# type: "string"
+# minLength: 1
+# @schema
+NAME: example
+# @schema
+# type: "array"
+# items:
+#   type: object
+#   properties:
+#     presetLabel:
+#       type: string
+#       minLength: 1
+#     lead:
+#       type: boolean
+#     excludeStands:
+#       type: array
+#       items:
+#         type: string
+#         minLength: 1
+#     exceptStands:
+#       type: array
+#       items:
+#         type: string
+#         minLength: 1
+#   required:
+#   - presetLabel
+# minItems: 1
+# contains:
+#   type: object
+#   properties:
+#     lead:
+#       const: true
+#   required:
+#   - lead
+# @schema
+CONTAINERS:
+  - {presetLabel: app, lead: true}
+  - {presetLabel: sidecar, excludeStands: [dev], exceptStands: [dev]}
+# @schema
+# type: object
+# additionalProperties:
+#   type: string
+#   minLength: 1
+# @schema
+IMAGES:
+  APP: nginx:1.27-alpine
+  SIDECAR: nginx:1.27-alpine
+# @schema
+# type: "string"
+# minLength: 1
+# @schema
+REPLICAS: '{{ 2 }}'
+# @schema
+# type: "boolean"
+# @schema
+RECREATE: false
+# @schema
+# type: "string"
+# minLength: 1
+# @schema
+ENVIRONMENT: prod
+# @schema
+# type: "object"
+# additionalProperties:
+#   anyOf:
+#   - type: array
+#     items:
+#       type: object
+#       properties:
+#         name:
+#           type: string
+#           minLength: 1
+#         port:
+#           type: integer
+#           minimum: 1
+#           maximum: 65535
+#         protocol:
+#           enum:
+#           - TCP
+#           - UDP
+#           - SCTP
+#           - tcp
+#           - udp
+#           - sctp
+#         targetPort:
+#           anyOf:
+#           - type: integer
+#             minimum: 1
+#             maximum: 65535
+#           - type: string
+#             minLength: 1
+#         hostport:
+#           type: boolean
+#       required:
+#       - name
+#       - port
+#       - protocol
+#   - type: 'null'
+# @schema
+PORTS:
+  APP:
+    - {name: http, port: 8080, targetPort: 80, protocol: TCP}
+# @schema
+# type: "object"
+# additionalProperties:
+#   anyOf:
+#   - type: array
+#     items:
+#       type: object
+#       properties:
+#         name:
+#           type: string
+#           minLength: 1
+#         type:
+#           enum:
+#           - text
+#           - secret
+#           - fieldRef
+#         value:
+#           type:
+#           - string
+#           - number
+#           - boolean
+#         key:
+#           type: string
+#           minLength: 1
+#       required:
+#       - name
+#       - type
+#       allOf:
+#       - if:
+#           properties:
+#             type:
+#               const: text
+#           required:
+#           - type
+#         then:
+#           required:
+#           - value
+#       - if:
+#           properties:
+#             type:
+#               const: secret
+#           required:
+#           - type
+#         then:
+#           required:
+#           - key
+#       - if:
+#           properties:
+#             type:
+#               const: fieldRef
+#           required:
+#           - type
+#         then:
+#           required:
+#           - value
+#           properties:
+#             value:
+#               type: string
+#               minLength: 1
+#   - type: 'null'
+# @schema
+ENVIRONMENTS:
+  APP:
+    - {name: LOG_LEVEL, type: text, value: info}
+    - {name: POD_NAME, type: fieldRef, value: metadata.name}
+    - {name: EXAMPLE_TOKEN, type: secret, key: token}
+# @schema
+# type: "object"
+# properties:
+#   PREFIX:
+#     type:
+#     - string
+#     - 'null'
+# additionalProperties:
+#   anyOf:
+#   - type: array
+#     items:
+#       type: object
+#       properties:
+#         name:
+#           type: string
+#           minLength: 1
+#         mountPath:
+#           type: string
+#           minLength: 1
+#         readOnly:
+#           type: boolean
+#         subPath:
+#           type: string
+#           minLength: 1
+#         hostPath:
+#           type: string
+#           minLength: 1
+#         secretName:
+#           type: string
+#           minLength: 1
+#         key:
+#           type: string
+#           minLength: 1
+#         aws_efs_id:
+#           type: string
+#           minLength: 1
+#         aws_efs_ap:
+#           type: string
+#           minLength: 1
+#         region:
+#           type: string
+#           minLength: 1
+#         storage:
+#           type: string
+#           minLength: 1
+#       required:
+#       - name
+#       - mountPath
+#   - type: 'null'
+# @schema
+VOLUME_MOUNTS:
+  APP:
+    - {name: shared-data, mountPath: /data, readOnly: false, aws_efs_id: fs-00000000000000000, aws_efs_ap: fsap-00000000000000000, storage: 1Gi, region: eu-west-1}
+# @schema
+# type: "object"
+# additionalProperties:
+#   anyOf:
+#   - type: array
+#     items:
+#       type: object
+#       properties:
+#         name:
+#           type: string
+#           minLength: 1
+#         mountPath:
+#           type: string
+#           minLength: 1
+#         configMapName:
+#           type: string
+#           minLength: 1
+#         subPath:
+#           type: string
+#           minLength: 1
+#         defaultMode:
+#           type: integer
+#         content:
+#           type: array
+#           items:
+#             type: object
+#             properties:
+#               data:
+#                 anyOf:
+#                 - type: string
+#                 - type: object
+#                   additionalProperties:
+#                     type: string
+#               data_nl:
+#                 anyOf:
+#                 - type: string
+#                 - type: object
+#                   additionalProperties:
+#                     type: string
+#       required:
+#       - name
+#       - mountPath
+#       - configMapName
+#   - type: 'null'
+# @schema
+DCM:
+  APP:
+    - name: app-config
+      mountPath: /etc/example
+      configMapName: example-config
+      subPath: settings.conf
+      content:
+        - data: |
+            mode=example
+# @schema
+# type: "object"
+# additionalProperties:
+#   anyOf:
+#   - type: array
+#     items:
+#       type:
+#       - string
+#       - number
+#       - boolean
+#   - type: 'null'
+# @schema
+ARGS: {}
+# @schema
+# type: "object"
+# additionalProperties:
+#   anyOf:
+#   - type: array
+#     items:
+#       type: string
+#       minLength: 1
+#   - type: 'null'
+# @schema
+COMMANDS: {}
+# @schema
+# type: "object"
+# additionalProperties:
+#   type:
+#   - object
+#   - 'null'
+# @schema
+PROBES: {}
+# @schema
+# type: "object"
+# properties:
+#   STRICT:
+#     type: boolean
+#   VALUE:
+#     type: integer
+#   NODE_SELECTOR:
+#     type: array
+#     items:
+#       type: object
+#       properties:
+#         label:
+#           type: string
+#           minLength: 1
+#         value:
+#           type: array
+#           items:
+#             type: string
+#             minLength: 1
+#       required:
+#       - label
+#       - value
+# required: []
+# @schema
+PRIORITY:
+  STRICT: false
+  VALUE: 1000
+  NODE_SELECTOR:
+    - {label: kubernetes.io/os, value: [linux]}
+RESOURCE_EXAMPLE_APP: "500m/128Mi/100m/64Mi"
+RESOURCE_EXAMPLE_SIDECAR: "250m/128Mi/50m/64Mi"

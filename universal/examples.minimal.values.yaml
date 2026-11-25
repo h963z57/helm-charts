@@ -1,0 +1,7 @@
+# Minimal workload example.
+NAME: example
+CONTAINERS:
+  - {presetLabel: app, lead: true}
+IMAGES:
+  APP: nginx:1.27-alpine
+RESOURCE_EXAMPLE_APP: "500m/128Mi/100m/64Mi"

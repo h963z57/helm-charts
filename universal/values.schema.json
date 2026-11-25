@@ -1,0 +1,628 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": true,
+  "patternProperties": {
+    "^RESOURCE_[A-Z0-9_]+$": {
+      "description": "Four slash-separated resource quantities after template evaluation.",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "ARGS": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "items": {
+              "type": [
+                "string",
+                "number",
+                "boolean"
+              ]
+            },
+            "type": "array"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "required": [],
+      "type": "object"
+    },
+    "COMMANDS": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "items": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "type": "array"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "required": [],
+      "type": "object"
+    },
+    "CONTAINERS": {
+      "contains": {
+        "properties": {
+          "lead": {
+            "const": true,
+            "required": []
+          }
+        },
+        "required": [
+          "lead"
+        ],
+        "type": "object"
+      },
+      "items": {
+        "properties": {
+          "exceptStands": {
+            "items": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "excludeStands": {
+            "items": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "lead": {
+            "type": "boolean"
+          },
+          "presetLabel": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "presetLabel"
+        ],
+        "type": "object"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "DCM": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "items": {
+              "properties": {
+                "configMapName": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "content": {
+                  "items": {
+                    "properties": {
+                      "data": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "additionalProperties": {
+                              "type": "string"
+                            },
+                            "type": "object"
+                          }
+                        ]
+                      },
+                      "data_nl": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "additionalProperties": {
+                              "type": "string"
+                            },
+                            "type": "object"
+                          }
+                        ]
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "defaultMode": {
+                  "type": "integer"
+                },
+                "mountPath": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "name": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "subPath": {
+                  "minLength": 1,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name",
+                "mountPath",
+                "configMapName"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "properties": {
+        "APP": {
+          "items": {
+            "anyOf": [
+              {
+                "properties": {
+                  "configMapName": {
+                    "type": "string"
+                  },
+                  "content": {
+                    "items": {
+                      "anyOf": [
+                        {
+                          "properties": {
+                            "data": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [],
+                          "type": "object"
+                        }
+                      ],
+                      "required": []
+                    },
+                    "type": "array"
+                  },
+                  "mountPath": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "subPath": {
+                    "type": "string"
+                  }
+                },
+                "required": [],
+                "type": "object"
+              }
+            ],
+            "required": []
+          },
+          "type": "array"
+        }
+      },
+      "required": [],
+      "type": "object"
+    },
+    "ENVIRONMENT": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "ENVIRONMENTS": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "items": {
+              "allOf": [
+                {
+                  "if": {
+                    "properties": {
+                      "type": {
+                        "const": "text"
+                      }
+                    },
+                    "required": [
+                      "type"
+                    ]
+                  },
+                  "then": {
+                    "required": [
+                      "value"
+                    ]
+                  }
+                },
+                {
+                  "if": {
+                    "properties": {
+                      "type": {
+                        "const": "secret"
+                      }
+                    },
+                    "required": [
+                      "type"
+                    ]
+                  },
+                  "then": {
+                    "required": [
+                      "key"
+                    ]
+                  }
+                },
+                {
+                  "if": {
+                    "properties": {
+                      "type": {
+                        "const": "fieldRef"
+                      }
+                    },
+                    "required": [
+                      "type"
+                    ]
+                  },
+                  "then": {
+                    "properties": {
+                      "value": {
+                        "minLength": 1,
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "value"
+                    ]
+                  }
+                }
+              ],
+              "properties": {
+                "key": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "name": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "type": {
+                  "enum": [
+                    "text",
+                    "secret",
+                    "fieldRef"
+                  ]
+                },
+                "value": {
+                  "type": [
+                    "string",
+                    "number",
+                    "boolean"
+                  ]
+                }
+              },
+              "required": [
+                "name",
+                "type"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "properties": {
+        "APP": {
+          "items": {
+            "anyOf": [
+              {
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string"
+                  },
+                  "value": {
+                    "type": "string"
+                  }
+                },
+                "required": [],
+                "type": "object"
+              },
+              {
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string"
+                  },
+                  "value": {
+                    "type": "string"
+                  }
+                },
+                "required": [],
+                "type": "object"
+              },
+              {
+                "properties": {
+                  "key": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string"
+                  }
+                },
+                "required": [],
+                "type": "object"
+              }
+            ],
+            "required": []
+          },
+          "type": "array"
+        }
+      },
+      "required": [],
+      "type": "object"
+    },
+    "IMAGES": {
+      "additionalProperties": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "properties": {
+        "APP": {
+          "type": "string"
+        },
+        "SIDECAR": {
+          "type": "string"
+        }
+      },
+      "required": [],
+      "type": "object"
+    },
+    "NAME": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "PORTS": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "items": {
+              "properties": {
+                "hostport": {
+                  "type": "boolean"
+                },
+                "name": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "port": {
+                  "maximum": 65535,
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                "protocol": {
+                  "enum": [
+                    "TCP",
+                    "UDP",
+                    "SCTP",
+                    "tcp",
+                    "udp",
+                    "sctp"
+                  ]
+                },
+                "targetPort": {
+                  "anyOf": [
+                    {
+                      "maximum": 65535,
+                      "minimum": 1,
+                      "type": "integer"
+                    },
+                    {
+                      "minLength": 1,
+                      "type": "string"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "name",
+                "port",
+                "protocol"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "properties": {
+        "APP": {
+          "items": {
+            "anyOf": [
+              {
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "port": {
+                    "type": "integer"
+                  },
+                  "protocol": {
+                    "type": "string"
+                  },
+                  "targetPort": {
+                    "type": "integer"
+                  }
+                },
+                "required": [],
+                "type": "object"
+              }
+            ],
+            "required": []
+          },
+          "type": "array"
+        }
+      },
+      "required": [],
+      "type": "object"
+    },
+    "PRIORITY": {
+      "properties": {
+        "NODE_SELECTOR": {
+          "items": {
+            "properties": {
+              "label": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "value": {
+                "items": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "STRICT": {
+          "type": "boolean"
+        },
+        "VALUE": {
+          "type": "integer"
+        }
+      },
+      "required": [],
+      "type": "object"
+    },
+    "PROBES": {
+      "additionalProperties": {
+        "type": [
+          "object",
+          "null"
+        ]
+      },
+      "required": [],
+      "type": "object"
+    },
+    "RECREATE": {
+      "type": "boolean"
+    },
+    "REPLICAS": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "RESOURCE_EXAMPLE_APP": {
+      "type": "string"
+    },
+    "RESOURCE_EXAMPLE_SIDECAR": {
+      "type": "string"
+    },
+    "VOLUME_MOUNTS": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "items": {
+              "properties": {
+                "aws_efs_ap": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "aws_efs_id": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "hostPath": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "key": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "mountPath": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "name": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "readOnly": {
+                  "type": "boolean"
+                },
+                "region": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "secretName": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "storage": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "subPath": {
+                  "minLength": 1,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name",
+                "mountPath"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "properties": {
+        "PREFIX": {
+          "required": [],
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [],
+      "type": "object"
+    }
+  },
+  "required": [
+    "NAME",
+    "CONTAINERS",
+    "IMAGES"
+  ],
+  "title": "Universal chart values",
+  "type": "object"
+}
