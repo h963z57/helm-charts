@@ -1,5 +1,9 @@
 # Changelog
 
+## [6.0.4] - 26-Nov-2026
+### Added
+- default memory storage for redis
+
 ## [6.0.3] - 24-Nov-2026
 ### Added
 - CI check
